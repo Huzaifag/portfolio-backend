@@ -1,0 +1,51 @@
+<% layout('layouts/layout') -%>
+    <% block('header', true) %>
+        <% block('sidebar', true) %>
+            <div class="max-w-xl mx-auto mt-10 bg-white rounded-lg shadow p-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">
+                        <%= cert.icon %>
+                    </span>
+                    <h1 class="text-2xl font-bold text-gray-800">
+                        <%= cert.title %>
+                    </h1>
+                </div>
+                <div class="text-gray-600 text-base mb-2">
+                    <%= cert.type %>
+                </div>
+                <div class="text-gray-500 text-sm mb-4">
+                    <%= cert.description %>
+                </div>
+                <% if (cert.media && cert.media.url) { %>
+                    <img src="<%= cert.media.url %>" alt="Certificate Media"
+                        class="w-40 h-40 object-cover rounded border border-gray-300 mb-4" />
+                    <% } %>
+                        <% if (cert.issuedBy) { %>
+                            <div class="mb-1"><span class="font-semibold text-gray-700">Issued By:</span>
+                                <%= cert.issuedBy %>
+                            </div>
+                            <% } %>
+                                <% if (cert.issuedAt) { %>
+                                    <div class="mb-1"><span class="font-semibold text-gray-700">Issued At:</span>
+                                        <%= cert.issuedAt.toLocaleDateString() %>
+                                    </div>
+                                    <% } %>
+                                        <% if (cert.link) { %>
+                                            <div class="mb-1"><span class="font-semibold text-gray-700">Certificate
+                                                    Link:</span> <a href="<%= cert.link %>"
+                                                    class="text-indigo-600 hover:underline" target="_blank">View
+                                                    Certificate</a></div>
+                                            <% } %>
+                                                <div class="flex gap-2 mt-6">
+                                                    <a href="/certifications/<%= cert._id %>/edit"
+                                                        class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit</a>
+                                                    <form action="/certifications/<%= cert._id %>/delete" method="POST"
+                                                        style="display:inline">
+                                                        <button type="submit"
+                                                            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                                                            onclick="return confirm('Delete this certification?')">Delete</button>
+                                                    </form>
+                                                    <a href="/certifications"
+                                                        class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Back</a>
+                                                </div>
+            </div>

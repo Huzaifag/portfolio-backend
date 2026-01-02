@@ -1,0 +1,35 @@
+/* public/css/styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8fafc;
+}
+
+.sidebar {
+    transition: all 0.3s ease;
+}
+
+.sidebar-item:hover {
+    background-color: rgba(99, 102, 241, 0.1);
+}
+
+.sidebar-item.active {
+    background-color: rgba(99, 102, 241, 0.2);
+    border-left: 4px solid #6366f1;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.progress-ring__circle {
+    transition: stroke-dashoffset 0.5s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}

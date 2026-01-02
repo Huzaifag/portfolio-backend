@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        <%= title || 'Portfolio Dashboard' %>
+    </title>
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css?v=<%= new Date().getTime() %>">
+
+    <style>
+        /* Inline critical CSS */
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .sidebar-item.active {
+            background-color: rgba(99, 102, 241, 0.2);
+            border-left: 4px solid #6366f1;
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.5s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+
+<body class="flex h-screen overflow-hidden bg-gray-50">
+    <% if (typeof sidebar==='undefined' || sidebar) { %>
+        <%- include('../partials/sidebar') %>
+            <% } %>
+
+                <div class="flex-1 flex flex-col overflow-hidden">
+                    <% if (typeof header==='undefined' || header) { %>
+                        <%- include('../partials/header') %>
+                            <% } %>
+
+                                <main class="flex-1 overflow-y-auto p-6">
+                                    <%- body %>
+                                </main>
+                </div>
+
+                <!-- Scripts -->
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                    // Simple animation for progress rings
+                    document.addEventListener('DOMContentLoaded', function () {
+                        console.log('DOM fully loaded');
+
+                        // Progress rings
+                        const circles = document.querySelectorAll('.progress-ring__circle');
+                        const radius = 16;
+                        const circumference = 2 * Math.PI * radius;
+
+                        circles.forEach(circle => {
+                            const textElement = circle.parentElement.querySelector('text');
+                            if (textElement) {
+                                const percent = textElement.textContent.replace('%', '');
+                                const offset = circumference - (percent / 100) * circumference;
+                                circle.style.strokeDasharray = `${circumference} ${circumference}`;
+                                circle.style.strokeDashoffset = offset;
+                            }
+                        });
+
+                        // Sidebar item click handler
+                        const sidebarItems = document.querySelectorAll('.sidebar-item');
+                        sidebarItems.forEach(item => {
+                            item.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                const href = this.getAttribute('href');
+                                if (href && href !== '#') {
+                                    window.location.href = href;
+                                    return;
+                                }
+
+                                sidebarItems.forEach(i => i.classList.remove('active', 'text-indigo-600'));
+                                sidebarItems.forEach(i => i.classList.add('text-gray-600'));
+                                this.classList.add('active', 'text-indigo-600');
+                                this.classList.remove('text-gray-600');
+                            });
+                        });
+
+                        // Log when all resources are loaded
+                        window.addEventListener('load', function () {
+                            console.log('All resources finished loading!');
+                            console.log('Styles loaded:', document.styleSheets);
+                        });
+                    });
+                </script>
+</body>
+
+</html>

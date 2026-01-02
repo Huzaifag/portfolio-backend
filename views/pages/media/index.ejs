@@ -1,0 +1,75 @@
+<% layout('layouts/layout') -%>
+<% block('header', true) %>
+<% block('sidebar', true) %>
+<div class="max-w-7xl mx-auto mt-12 px-4">
+  <div class="flex flex-col sm:flex-row items-center justify-between mb-10 gap-4">
+    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center drop-shadow-lg">
+      <i class="fas fa-photo-video mr-3 text-indigo-600 text-4xl"></i> Media Library
+      <% if (currentFolder) { %>
+        <span class="ml-3 text-lg text-gray-400 font-medium">/ <%= currentFolder.name %></span>
+      <% } %>
+    </h1>
+    <div class="flex flex-wrap gap-3 items-center">
+      <form action="/media/folder" method="POST" class="flex items-center gap-2 bg-white rounded-lg shadow px-2 py-1 border border-gray-200">
+        <input type="hidden" name="parent" value="<%= currentFolder ? currentFolder._id : '' %>" />
+        <input type="text" name="name" placeholder="New Folder" required class="border-none focus:ring-0 px-2 py-1 text-sm bg-transparent" />
+        <button type="submit" class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-3 py-1 rounded hover:from-indigo-600 hover:to-purple-600 text-sm font-semibold shadow">Create Folder</button>
+      </form>
+      <a href="/media/new<%= currentFolder ? '?folder=' + currentFolder._id : '' %>" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-semibold rounded-lg shadow bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition">
+        <i class="fas fa-plus mr-2"></i> Upload Media
+      </a>
+      <% if (currentFolder) { %>
+        <a href="<%= currentFolder.parent ? '/media/folder/' + currentFolder.parent : '/media' %>" class="ml-2 text-sm text-gray-400 hover:text-indigo-600 font-medium transition">Back</a>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <% if (folders && folders.length) { %>
+      <% folders.forEach(folder => { %>
+        <div class="group bg-gradient-to-br from-yellow-50 to-white rounded-2xl shadow-xl p-6 flex flex-col items-center border border-yellow-100 hover:shadow-2xl transition-all duration-200 relative overflow-hidden">
+          <a href="/media/folder/<%= folder._id %>" class="flex flex-col items-center w-full">
+            <i class="fas fa-folder fa-4x text-yellow-400 mb-3 group-hover:scale-110 transition-transform"></i>
+            <span class="font-bold text-gray-800 text-lg group-hover:text-yellow-600 transition-colors"><%= folder.name %></span>
+          </a>
+          <form action="/media/folder/<%= folder._id %>/rename" method="POST" class="flex mt-3 w-full">
+            <input type="text" name="name" value="<%= folder.name %>" class="border border-gray-200 rounded-l px-2 py-1 text-sm w-full focus:ring-2 focus:ring-yellow-300" required />
+            <button type="submit" class="bg-yellow-400 text-white px-3 rounded-r hover:bg-yellow-500 text-sm font-semibold transition">Rename</button>
+          </form>
+          <form action="/media/folder/<%= folder._id %>/delete" method="POST" class="mt-2 w-full">
+            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded w-full hover:bg-red-600 text-sm font-semibold transition" onclick="return confirm('Delete this folder and all its contents?')">Delete</button>
+          </form>
+        </div>
+      <% }) %>
+    <% } %>
+    <% if (media && media.length) { %>
+      <% media.forEach(item => { %>
+        <div class="group bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center border border-gray-100 hover:shadow-2xl transition-all duration-200 relative overflow-hidden">
+          <% if (item.type === 'image') { %>
+            <img src="<%= item.url %>" alt="<%= item.title %>" class="w-full h-36 object-cover rounded-xl mb-3 border-2 border-gray-100 group-hover:border-indigo-300 transition" />
+          <% } else if (item.type === 'video') { %>
+            <i class="fas fa-video fa-4x text-indigo-400 mb-3 group-hover:scale-110 transition-transform"></i>
+          <% } else if (item.type === 'audio') { %>
+            <i class="fas fa-music fa-4x text-green-400 mb-3 group-hover:scale-110 transition-transform"></i>
+          <% } else if (item.type === 'document' || item.type === 'resume') { %>
+            <i class="fas fa-file-alt fa-4x text-gray-400 mb-3 group-hover:scale-110 transition-transform"></i>
+          <% } else { %>
+            <i class="fas fa-photo-video fa-4x text-gray-300 mb-3 group-hover:scale-110 transition-transform"></i>
+          <% } %>
+          <span class="font-bold text-gray-800 mb-1 text-base group-hover:text-indigo-600 transition-colors"><%= item.title %></span>
+          <span class="text-xs text-gray-400 mb-2"><%= item.uploadedAt.toLocaleDateString() %></span>
+          <div class="flex gap-2 mt-2">
+            <a href="/media/<%= item._id %>" class="text-indigo-600 hover:text-indigo-900 text-sm font-semibold transition">Show</a>
+            <a href="/media/<%= item._id %>/edit" class="text-yellow-600 hover:text-yellow-900 text-sm font-semibold transition">Edit</a>
+            <form action="/media/<%= item._id %>/delete" method="POST" style="display:inline">
+              <button type="submit" class="text-red-600 hover:text-red-900 text-sm font-semibold transition" onclick="return confirm('Delete this media?')">Delete</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+    <% if ((!folders || !folders.length) && (!media || !media.length)) { %>
+      <div class="col-span-full text-center text-gray-300 text-lg font-semibold py-16">No folders or media found.</div>
+    <% } %>
+  </div>
+</div>

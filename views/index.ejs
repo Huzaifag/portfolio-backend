@@ -1,0 +1,369 @@
+<% layout('layouts/layout') -%>
+
+    <% block('header', true) %>
+        <% block('sidebar', true) %>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="card bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Personal Info</p>
+                            <h3 class="text-2xl font-bold mt-1">100%</h3>
+                            <p class="text-xs text-green-500 mt-1">Complete</p>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                            <i class="fas fa-user text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Education</p>
+                            <h3 class="text-2xl font-bold mt-1">3</h3>
+                            <p class="text-xs text-blue-500 mt-1">Degrees</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                            <i class="fas fa-graduation-cap text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Experience</p>
+                            <h3 class="text-2xl font-bold mt-1">5</h3>
+                            <p class="text-xs text-purple-500 mt-1">Positions</p>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                            <i class="fas fa-briefcase text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Projects</p>
+                            <h3 class="text-2xl font-bold mt-1">12</h3>
+                            <p class="text-xs text-pink-500 mt-1">Completed</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-pink-600">
+                            <i class="fas fa-project-diagram text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Sections -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Profile Completion -->
+                <div class="lg:col-span-2">
+                    <div class="card bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold">Profile Completion</h2>
+                            <button class="text-sm text-indigo-600 hover:text-indigo-800">View All</button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mr-3">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Personal Information</p>
+                                        <p class="text-xs text-gray-500">Basic details, contact info</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="progress-ring w-10 h-10" viewBox="0 0 36 36">
+                                        <circle class="progress-ring__circle-bg" stroke="#e2e8f0" stroke-width="3"
+                                            fill="none" r="16" cx="18" cy="18"></circle>
+                                        <circle class="progress-ring__circle" stroke="#6366f1" stroke-width="3"
+                                            stroke-dasharray="100, 100" stroke-dashoffset="0" fill="none" r="16" cx="18"
+                                            cy="18"></circle>
+                                        <text x="18" y="20.5" text-anchor="middle" font-size="10" fill="#6366f1"
+                                            font-weight="bold">100%</text>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Education</p>
+                                        <p class="text-xs text-gray-500">Degrees, certifications</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="progress-ring w-10 h-10" viewBox="0 0 36 36">
+                                        <circle class="progress-ring__circle-bg" stroke="#e2e8f0" stroke-width="3"
+                                            fill="none" r="16" cx="18" cy="18"></circle>
+                                        <circle class="progress-ring__circle" stroke="#3b82f6" stroke-width="3"
+                                            stroke-dasharray="100, 100" stroke-dashoffset="25" fill="none" r="16"
+                                            cx="18" cy="18"></circle>
+                                        <text x="18" y="20.5" text-anchor="middle" font-size="10" fill="#3b82f6"
+                                            font-weight="bold">75%</text>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mr-3">
+                                        <i class="fas fa-briefcase"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Work Experience</p>
+                                        <p class="text-xs text-gray-500">Jobs, internships</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="progress-ring w-10 h-10" viewBox="0 0 36 36">
+                                        <circle class="progress-ring__circle-bg" stroke="#e2e8f0" stroke-width="3"
+                                            fill="none" r="16" cx="18" cy="18"></circle>
+                                        <circle class="progress-ring__circle" stroke="#8b5cf6" stroke-width="3"
+                                            stroke-dasharray="100, 100" stroke-dashoffset="40" fill="none" r="16"
+                                            cx="18" cy="18"></circle>
+                                        <text x="18" y="20.5" text-anchor="middle" font-size="10" fill="#8b5cf6"
+                                            font-weight="bold">60%</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div>
+                    <div class="card bg-white rounded-xl shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
+
+                        <div class="space-y-3">
+                            <button
+                                class="w-full flex items-center justify-between p-3 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-plus mr-3"></i>
+                                    <span>Add New Project</span>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+
+                            <button
+                                class="w-full flex items-center justify-between p-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-pen mr-3"></i>
+                                    <span>Update Education</span>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+
+                            <button
+                                class="w-full flex items-center justify-between p-3 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-file-alt mr-3"></i>
+                                    <span>Generate Resume</span>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+
+                            <button
+                                class="w-full flex items-center justify-between p-3 bg-pink-50 text-pink-600 rounded-lg hover:bg-pink-100 transition">
+                                <div class="flex items-center">
+                                    <i class="fas fa-globe mr-3"></i>
+                                    <span>View Portfolio</span>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Projects -->
+                <div class="lg:col-span-2">
+                    <div class="card bg-white rounded-xl shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold">Recent Projects</h2>
+                            <button class="text-sm text-indigo-600 hover:text-indigo-800">View All</button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Project</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Type</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Date</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div
+                                                    class="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
+                                                    <i class="fas fa-code"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Portfolio Dashboard
+                                                    </div>
+                                                    <div class="text-sm text-gray-500">Web Application</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Web Dev</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jul 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
+                                            <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div
+                                                    class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                                                    <i class="fas fa-mobile-alt"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Task Manager App
+                                                    </div>
+                                                    <div class="text-sm text-gray-500">Mobile Application</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mobile Dev</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">In
+                                                Progress</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jun 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
+                                            <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div
+                                                    class="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
+                                                    <i class="fas fa-chart-line"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Data Analysis Tool
+                                                    </div>
+                                                    <div class="text-sm text-gray-500">Data Science</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Data Science</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Planning</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">May 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
+                                            <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Overview -->
+                <div>
+                    <div class="card bg-white rounded-xl shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">Skills Overview</h2>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">JavaScript</span>
+                                    <span class="text-sm font-medium text-gray-700">90%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 90%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">React</span>
+                                    <span class="text-sm font-medium text-gray-700">85%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">Node.js</span>
+                                    <span class="text-sm font-medium text-gray-700">80%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-green-600 h-2.5 rounded-full" style="width: 80%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">UI/UX Design</span>
+                                    <span class="text-sm font-medium text-gray-700">75%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-purple-600 h-2.5 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">Python</span>
+                                    <span class="text-sm font-medium text-gray-700">70%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-pink-600 h-2.5 rounded-full" style="width: 70%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            class="mt-6 w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Update Skills
+                        </button>
+                    </div>
+                </div>
+            </div>

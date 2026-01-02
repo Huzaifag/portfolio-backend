@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Components Library</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8fafc;
+    }
+
+    .component-container {
+      border: 1px dashed #cbd5e1;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .component-title {
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .animate-pop-in {
+      animation: popIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .circular-chart {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .circle-bg {
+      fill: none;
+      stroke: #eee;
+      stroke-width: 3;
+    }
+
+    .circle-fill {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke: #8b5cf6;
+      animation: circle-fill-animation 1.5s ease-in-out;
+    }
+
+    .percentage {
+      fill: #666;
+      font-size: 0.5em;
+      text-anchor: middle;
+    }
+
+    @keyframes circle-fill-animation {
+      0% {
+        stroke-dasharray: 0, 100;
+      }
+    }
+  </style>
+</head>
+
+<body class="p-6 bg-gray-50">
+  <h1 class="text-3xl font-bold text-gray-800 mb-8">Dashboard Components Library</h1>
+
+  <!-- Table Component -->
+  <div class="component-container">
+    <h2 class="component-title">
+      <i class="fas fa-table mr-2"></i> Table Component
+    </h2>
+
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Status</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10">
+                  <img class="h-10 w-10 rounded-full" src="https://via.placeholder.com/40" alt="">
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">John Doe</div>
+                  <div class="text-sm text-gray-500">john@example.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">Admin</div>
+              <div class="text-sm text-gray-500">Full-time</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+              <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10">
+                  <img class="h-10 w-10 rounded-full" src="https://via.placeholder.com/40" alt="">
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">Jane Smith</div>
+                  <div class="text-sm text-gray-500">jane@example.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">Developer</div>
+              <div class="text-sm text-gray-500">Part-time</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+              <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Card Components -->
+  <div class="component-container">
+    <h2 class="component-title">
+      <i class="fas fa-id-card mr-2"></i> Card Components
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Basic Card -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-6">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+              <i class="fas fa-chart-line text-white"></i>
+            </div>
+            <div class="ml-5">
+              <p class="text-sm font-medium text-gray-500 truncate">Total Revenue</p>
+              <p class="text-2xl font-semibold text-gray-900">$45,231</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card with Image -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <img class="w-full h-32 object-cover" src="https://via.placeholder.com/400x200" alt="Card header">
+        <div class="p-6">
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Project Dashboard</h3>
+          <p class="text-gray-500 mb-4">A clean and modern dashboard design for your next project.</p>
+          <button class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">View Project</button>
+        </div>
+      </div>
+
+      <!-- Stats Card -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-6">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Progress</h3>
+          <div class="mb-4">
+            <div class="flex justify-between mb-1">
+              <span class="text-sm font-medium text-gray-700">Development</span>
+              <span class="text-sm font-medium text-gray-700">72%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-blue-600 h-2 rounded-full" style="width: 72%"></div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <div class="flex justify-between mb-1">
+              <span class="text-sm font-medium text-gray-700">Design</span>
+              <span class="text-sm font-medium text-gray-700">90%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-green-600 h-2 rounded-full" style="width: 90%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Components -->
+  <div class="component-container">
+    <h2 class="component-title">
+      <i class="fas fa-wpforms mr-2"></i> Form Components
+    </h2>
+
+    <form class="space-y-6 bg-white p-6 rounded-lg shadow">
+      <!-- Text Input -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+        <input type="text" id="name"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+      </div>
+
+      <!-- Email Input -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+        <input type="email" id="email"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+      </div>
+
+      <!-- Password Input -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+        <input type="password" id="password"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+      </div>
+
+      <!-- Textarea -->
+      <div>
+        <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
+        <textarea id="bio" rows="3"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+      </div>
+
+      <!-- Select Dropdown -->
+      <div>
+        <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+        <select id="country"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+          <option>United States</option>
+          <option>Canada</option>
+          <option>Mexico</option>
+        </select>
+      </div>
+
+      <!-- Checkbox -->
+      <div class="flex items-start">
+        <div class="flex items-center h-5">
+          <input id="terms" name="terms" type="checkbox"
+            class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+        </div>
+        <div class="ml-3 text-sm">
+          <label for="terms" class="font-medium text-gray-700">I agree to the terms and conditions</label>
+        </div>
+      </div>
+
+      <!-- Radio Buttons -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Notification Preference</label>
+        <div class="mt-2 space-y-2">
+          <div class="flex items-center">
+            <input id="push-everything" name="push-notifications" type="radio"
+              class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+            <label for="push-everything" class="ml-3 block text-sm font-medium text-gray-700">Everything</label>
+          </div>
+          <div class="flex items-center">
+            <input id="push-email" name="push-notifications" type="radio"
+              class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+            <label for="push-email" class="ml-3 block text-sm font-medium text-gray-700">Email only</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Upload -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Profile Photo</label>
+        <div class="mt-2 flex items-center">
+          <span class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
+            <img src="https://via.placeholder.com/50" alt="Profile" class="h-full w-full text-gray-300">
+          </span>
+          <button type="button"
+            class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Change
+          </button>
+        </div>
+      </div>
+
+      <!-- Toggle Switch -->
+      <div class="flex items-center justify-between">
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-700">Dark Mode</span>
+        </span>
+        <button type="button"
+          class="bg-gray-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          aria-pressed="false">
+          <span class="sr-only">Use setting</span>
+          <span
+            class="translate-x-0 inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"></span>
+        </button>
+      </div>
+
+      <!-- Form Buttons -->
+      <div class="flex justify-end space-x-3">
+        <button type="button"
+          class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Cancel
+        </button>
+        <button type="submit"
+          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Alert Components -->
+  <div class="component-container">
+    <h2 class="component-title">
+      <i class="fas fa-exclamation-triangle mr-2"></i> Alert Components
+    </h2>
+
+    <div class="space-y-4">
+      <!-- Success Alert -->
+      <div class="rounded-md bg-green-50 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <i class="fas fa-check-circle text-green-400"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-green-800">Successfully saved!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Alert -->
+      <div class="rounded-md bg-red-50 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <i class="fas fa-exclamation-circle text-red-400"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-red-800">There were errors with your submission.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning Alert -->
+      <div class="rounded-md bg-yellow-50 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-yellow-800">Warning: Your storage is almost full!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button Components -->
+  <div class="component-container">
+    <h2 class="component-title">
+      <i class="fas fa-hand-pointer mr-2"></i> Button Components
+    </h2>
+
+    <div class="space-y-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Primary
+        </button>
+        <button type="button"
+          class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Secondary
+        </button>
+        <button type="button"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Tertiary
+        </button>
+        <button type="button"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+          Danger
+        </button>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button"
+          class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Small
+        </button>
+        <button type="button"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Medium
+        </button>
+        <button type="button"
+          class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Large
+        </button>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <i class="fas fa-save mr-2"></i> Save
+        </button>
+        <button type="button"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+          <i class="fas fa-check mr-2"></i> Confirm
+        </button>
+        <button type="button"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+          <i class="fas fa-trash mr-2"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Badge Components -->
+  <div class="component-container">
+    <h2 class="component-title">
+      <i class="fas fa-tag mr-2"></i> Badge Components
+    </h2>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+        Active
+      </span>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+        Completed
+      </span>
+      <span
+        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+        Pending
+      </span>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+        Failed
+      </span>
+      <span
+        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+        New
+      </span>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+        Draft
+      </span>
+    </div>
+  </div>
+  <!-- BONUS: Dashboard Widgets -->
+  <div class="component-container">
+    <h2 class="component-title">
+      <i class="fas fa-cubes mr-2"></i> Special Widgets
+    </h2>
+
+    <!-- Stats with Progress -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="bg-white p-4 rounded-lg shadow">
+        <div class="flex justify-between">
+          <div>
+            <p class="text-sm text-gray-500">Monthly Goal</p>
+            <p class="text-2xl font-bold">75%</p>
+          </div>
+          <div class="w-16 h-16">
+            <svg viewBox="0 0 36 36" class="circular-chart">
+              <path class="circle-bg"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path class="circle-fill" stroke-dasharray="75, 100"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <text x="18" y="20" class="percentage">75%</text>
+            </svg>
+          </div>
+        </div>
+        <div class="mt-2 bg-gray-200 rounded-full h-2">
+          <div class="bg-purple-600 h-2 rounded-full" style="width: 75%"></div>
+        </div>
+      </div>
+
+      <!-- Timeline Widget -->
+      <div class="bg-white p-4 rounded-lg shadow col-span-2">
+        <h3 class="font-medium mb-3">Recent Activity</h3>
+        <div class="space-y-4">
+          <div class="flex items-start">
+            <div class="bg-green-100 p-2 rounded-full mr-3">
+              <i class="fas fa-check text-green-600"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium">Project completed</p>
+              <p class="text-xs text-gray-500">2 hours ago</p>
+            </div>
+          </div>
+          <div class="flex items-start">
+            <div class="bg-blue-100 p-2 rounded-full mr-3">
+              <i class="fas fa-user-plus text-blue-600"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium">New team member</p>
+              <p class="text-xs text-gray-500">Yesterday</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Action Tiles -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <button class="bg-white p-4 rounded-lg shadow flex flex-col items-center hover:bg-gray-50 transition">
+        <div class="bg-indigo-100 p-3 rounded-full mb-2">
+          <i class="fas fa-plus text-indigo-600"></i>
+        </div>
+        <span class="text-sm">New Project</span>
+      </button>
+      <button class="bg-white p-4 rounded-lg shadow flex flex-col items-center hover:bg-gray-50 transition">
+        <div class="bg-green-100 p-3 rounded-full mb-2">
+          <i class="fas fa-upload text-green-600"></i>
+        </div>
+        <span class="text-sm">Upload Files</span>
+      </button>
+      <button class="bg-white p-4 rounded-lg shadow flex flex-col items-center hover:bg-gray-50 transition">
+        <div class="bg-yellow-100 p-3 rounded-full mb-2">
+          <i class="fas fa-users text-yellow-600"></i>
+        </div>
+        <span class="text-sm">Invite Team</span>
+      </button>
+      <button class="bg-white p-4 rounded-lg shadow flex flex-col items-center hover:bg-gray-50 transition">
+        <div class="bg-red-100 p-3 rounded-full mb-2">
+          <i class="fas fa-cog text-red-600"></i>
+        </div>
+        <span class="text-sm">Settings</span>
+      </button>
+    </div>
+  </div>
+
+
+
+</body>
+<script>
+  // Animate widgets on scroll
+  document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-pop-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.component-container').forEach(comp => {
+      observer.observe(comp);
+    });
+  });
+</script>
+
+</html>

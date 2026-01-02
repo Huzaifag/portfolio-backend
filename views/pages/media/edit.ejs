@@ -1,0 +1,41 @@
+<% layout('layouts/layout') -%>
+<% block('header', true) %>
+<% block('sidebar', true) %>
+<div class="max-w-xl mx-auto mt-10 bg-white rounded-lg shadow p-8">
+  <h1 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+    <i class="fas fa-edit mr-2 text-indigo-600"></i> Edit Media
+  </h1>
+  <form action="/media/<%= media._id %>" method="POST" class="space-y-6">
+    <div>
+      <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
+      <select id="type" name="type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
+        <option value="image" <%= media.type === 'image' ? 'selected' : '' %>>Image</option>
+        <option value="video" <%= media.type === 'video' ? 'selected' : '' %>>Video</option>
+        <option value="audio" <%= media.type === 'audio' ? 'selected' : '' %>>Audio</option>
+        <option value="document" <%= media.type === 'document' ? 'selected' : '' %>>Document</option>
+        <option value="resume" <%= media.type === 'resume' ? 'selected' : '' %>>Resume</option>
+        <option value="other" <%= media.type === 'other' ? 'selected' : '' %>>Other</option>
+      </select>
+    </div>
+    <div>
+      <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+      <input type="text" id="title" name="title" value="<%= media.title %>" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
+    </div>
+    <div>
+      <label for="url" class="block text-sm font-medium text-gray-700">Media URL</label>
+      <input type="text" id="url" name="url" value="<%= media.url %>" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
+    </div>
+    <div>
+      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+      <textarea id="description" name="description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"><%= media.description %></textarea>
+    </div>
+    <div>
+      <label for="tags" class="block text-sm font-medium text-gray-700">Tags (comma separated)</label>
+      <input type="text" id="tags" name="tags" value="<%= media.tags ? media.tags.join(',') : '' %>" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
+    </div>
+    <div class="flex justify-end space-x-3">
+      <a href="/media" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</a>
+      <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Update</button>
+    </div>
+  </form>
+</div>
