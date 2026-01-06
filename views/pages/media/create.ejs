@@ -1,50 +1,510 @@
 <% layout('layouts/layout') -%>
 <% block('header', true) %>
 <% block('sidebar', true) %>
-<div class="max-w-xl mx-auto mt-10 bg-white rounded-lg shadow p-8">
+
+<div class="max-w-4xl mx-auto mt-8 px-6">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+      <i class="fas fa-cloud-upload-alt mr-4 text-indigo-600"></i>
+      Upload Media
+    </h1>
+    <p class="text-gray-600 mt-2">Upload single or multiple files to your media library</p>
+  </div>
+
+  <!-- Alert Messages -->
   <% if (typeof error !== 'undefined' && error) { %>
-    <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">Error: <%= error %></div>
+    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+      <div class="flex items-center">
+        <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
+        <span class="text-red-700">Error: <%= error %></span>
+      </div>
+    </div>
   <% } %>
+  
   <% if (typeof success !== 'undefined' && success) { %>
-    <div class="mb-4 p-3 bg-green-100 text-green-700 rounded">Media uploaded successfully!</div>
+    <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+      <div class="flex items-center">
+        <i class="fas fa-check-circle text-green-500 mr-3"></i>
+        <span class="text-green-700">Media uploaded successfully!</span>
+      </div>
+    </div>
   <% } %>
-  <h1 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-    <i class="fas fa-upload mr-2 text-indigo-600"></i> Upload Media
-  </h1>
-  <form action="/media" method="POST" enctype="multipart/form-data" class="space-y-6">
-    <% if (typeof currentFolder !== 'undefined' && currentFolder && currentFolder._id) { %>
-      <input type="hidden" name="folder" value="<%= currentFolder._id %>" />
-    <% } %>
-    <div>
-      <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
-      <select id="type" name="type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
-        <option value="image">Image</option>
-        <option value="video">Video</option>
-        <option value="audio">Audio</option>
-        <option value="document">Document</option>
-        <option value="resume">Resume</option>
-        <option value="other">Other</option>
-      </select>
+
+  <!-- Upload Tabs -->
+  <div class="mb-8">
+    <div class="border-b border-gray-200">
+      <nav class="-mb-px flex space-x-8">
+        <button id="singleUploadTab" class="upload-tab active py-2 px-1 border-b-2 font-medium text-sm">
+          <i class="fas fa-file mr-2"></i>
+          Single Upload
+        </button>
+        <button id="bulkUploadTab" class="upload-tab py-2 px-1 border-b-2 font-medium text-sm">
+          <i class="fas fa-files mr-2"></i>
+          Bulk Upload
+        </button>
+        <button id="dragDropTab" class="upload-tab py-2 px-1 border-b-2 font-medium text-sm">
+          <i class="fas fa-hand-paper mr-2"></i>
+          Drag & Drop
+        </button>
+      </nav>
     </div>
-    <div>
-      <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-      <input type="text" id="title" name="title" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
+  </div>
+
+  <!-- Single Upload Form -->
+  <div id="singleUploadForm" class="upload-form active">
+    <form action="/media" method="POST" enctype="multipart/form-data" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+      <% if (typeof currentFolder !== 'undefined' && currentFolder && currentFolder._id) { %>
+        <input type="hidden" name="folder" value="<%= currentFolder._id %>" />
+      <% } %>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Left Column -->
+        <div class="space-y-6">
+          <!-- File Upload -->
+          <div>
+            <label for="file" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-paperclip mr-2"></i>
+              Media File *
+            </label>
+            <div class="relative">
+              <input type="file" 
+                     id="file" 
+                     name="file" 
+                     accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.rar" 
+                     required 
+                     class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 file:cursor-pointer cursor-pointer border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+            <p class="text-xs text-gray-500 mt-2">
+              Supported formats: Images, Videos, Audio, Documents (PDF, DOC, PPT, XLS), Archives (ZIP, RAR)
+            </p>
+          </div>
+
+          <!-- File Type -->
+          <div>
+            <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-tag mr-2"></i>
+              File Type *
+            </label>
+            <select id="type" name="type" required class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Auto-detect from file</option>
+              <option value="image">Image</option>
+              <option value="video">Video</option>
+              <option value="audio">Audio</option>
+              <option value="document">Document</option>
+              <option value="resume">Resume</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <!-- Title -->
+          <div>
+            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-heading mr-2"></i>
+              Title *
+            </label>
+            <input type="text" 
+                   id="title" 
+                   name="title" 
+                   required 
+                   placeholder="Enter a descriptive title"
+                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-6">
+          <!-- Folder Selection -->
+          <div>
+            <label for="folder" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-folder mr-2"></i>
+              Destination Folder
+            </label>
+            <select id="folder" name="folder" class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Root Directory</option>
+              <% if (typeof allFolders !== 'undefined' && allFolders) { %>
+                <% allFolders.forEach(folder => { %>
+                  <option value="<%= folder._id %>" <%= (currentFolder && currentFolder._id === folder._id.toString()) ? 'selected' : '' %>>
+                    <%= folder.name %>
+                  </option>
+                <% }) %>
+              <% } %>
+            </select>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-align-left mr-2"></i>
+              Description
+            </label>
+            <textarea id="description" 
+                      name="description" 
+                      rows="4" 
+                      placeholder="Add a description for this media file..."
+                      class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"></textarea>
+          </div>
+
+          <!-- Tags -->
+          <div>
+            <label for="tags" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-tags mr-2"></i>
+              Tags
+            </label>
+            <input type="text" 
+                   id="tags" 
+                   name="tags" 
+                   placeholder="Enter tags separated by commas"
+                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+            <p class="text-xs text-gray-500 mt-1">Example: portfolio, design, web development</p>
+          </div>
+
+          <!-- Public/Private -->
+          <div>
+            <div class="flex items-center">
+              <input type="checkbox" 
+                     id="isPublic" 
+                     name="isPublic" 
+                     class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+              <label for="isPublic" class="ml-2 block text-sm text-gray-700">
+                <i class="fas fa-globe mr-2"></i>
+                Make this file publicly accessible
+              </label>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Public files can be accessed without authentication</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
+        <a href="/media<%= currentFolder ? '/folder/' + currentFolder._id : '' %>" 
+           class="px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+          Cancel
+        </a>
+        <button type="submit" 
+                class="px-6 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+          <i class="fas fa-upload mr-2"></i>
+          Upload Media
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Bulk Upload Form -->
+  <div id="bulkUploadForm" class="upload-form hidden">
+    <form action="/media/bulk" method="POST" enctype="multipart/form-data" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+      <div class="space-y-6">
+        <!-- Multiple File Upload -->
+        <div>
+          <label for="bulkFiles" class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-files mr-2"></i>
+            Select Multiple Files *
+          </label>
+          <input type="file" 
+                 id="bulkFiles" 
+                 name="files" 
+                 multiple 
+                 accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.rar" 
+                 required 
+                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 file:cursor-pointer cursor-pointer border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+          <p class="text-xs text-gray-500 mt-2">
+            Select up to 10 files at once. Maximum file size: 100MB per file.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Folder Selection -->
+          <div>
+            <label for="bulkFolder" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-folder mr-2"></i>
+              Destination Folder
+            </label>
+            <select id="bulkFolder" name="folder" class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Root Directory</option>
+              <% if (typeof allFolders !== 'undefined' && allFolders) { %>
+                <% allFolders.forEach(folder => { %>
+                  <option value="<%= folder._id %>" <%= (currentFolder && currentFolder._id === folder._id.toString()) ? 'selected' : '' %>>
+                    <%= folder.name %>
+                  </option>
+                <% }) %>
+              <% } %>
+            </select>
+          </div>
+
+          <!-- Common Tags -->
+          <div>
+            <label for="bulkTags" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-tags mr-2"></i>
+              Common Tags
+            </label>
+            <input type="text" 
+                   id="bulkTags" 
+                   name="tags" 
+                   placeholder="Tags to apply to all files"
+                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+          </div>
+        </div>
+
+        <!-- Public/Private -->
+        <div>
+          <div class="flex items-center">
+            <input type="checkbox" 
+                   id="bulkIsPublic" 
+                   name="isPublic" 
+                   class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+            <label for="bulkIsPublic" class="ml-2 block text-sm text-gray-700">
+              <i class="fas fa-globe mr-2"></i>
+              Make all files publicly accessible
+            </label>
+          </div>
+        </div>
+
+        <!-- Progress Bar (Hidden initially) -->
+        <div id="uploadProgress" class="hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-gray-700">Uploading files...</span>
+            <span id="progressText" class="text-sm text-gray-500">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="progressBar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
+        <a href="/media<%= currentFolder ? '/folder/' + currentFolder._id : '' %>" 
+           class="px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+          Cancel
+        </a>
+        <button type="submit" 
+                id="bulkUploadBtn"
+                class="px-6 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+          <i class="fas fa-upload mr-2"></i>
+          Upload All Files
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Drag & Drop Upload -->
+  <div id="dragDropForm" class="upload-form hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+      <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-indigo-400 transition-colors cursor-pointer">
+        <div class="space-y-4">
+          <div class="mx-auto w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-cloud-upload-alt text-2xl text-indigo-600"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">Drop files here to upload</h3>
+            <p class="text-gray-500">or click to browse files</p>
+          </div>
+          <div class="text-sm text-gray-400">
+            Supports: Images, Videos, Audio, Documents, Archives (Max 100MB per file)
+          </div>
+        </div>
+      </div>
+
+      <!-- File List -->
+      <div id="fileList" class="hidden mt-6">
+        <h4 class="text-sm font-medium text-gray-700 mb-3">Selected Files:</h4>
+        <div id="fileItems" class="space-y-2 max-h-60 overflow-y-auto"></div>
+      </div>
+
+      <!-- Upload Settings -->
+      <div id="uploadSettings" class="hidden mt-6 pt-6 border-t border-gray-200">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <label for="dropFolder" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-folder mr-2"></i>
+              Destination Folder
+            </label>
+            <select id="dropFolder" class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Root Directory</option>
+              <% if (typeof allFolders !== 'undefined' && allFolders) { %>
+                <% allFolders.forEach(folder => { %>
+                  <option value="<%= folder._id %>" <%= (currentFolder && currentFolder._id === folder._id.toString()) ? 'selected' : '' %>>
+                    <%= folder.name %>
+                  </option>
+                <% }) %>
+              <% } %>
+            </select>
+          </div>
+
+          <div>
+            <label for="dropTags" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-tags mr-2"></i>
+              Common Tags
+            </label>
+            <input type="text" 
+                   id="dropTags" 
+                   placeholder="Tags for all files"
+                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="flex items-center">
+            <input type="checkbox" 
+                   id="dropIsPublic" 
+                   class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+            <label for="dropIsPublic" class="ml-2 block text-sm text-gray-700">
+              <i class="fas fa-globe mr-2"></i>
+              Make all files publicly accessible
+            </label>
+          </div>
+        </div>
+
+        <!-- Upload Actions -->
+        <div class="flex justify-end space-x-4 mt-6">
+          <button id="clearFiles" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+            Clear Files
+          </button>
+          <button id="uploadFiles" class="px-6 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-lg hover:bg-indigo-700">
+            <i class="fas fa-upload mr-2"></i>
+            Upload Files
+          </button>
+        </div>
+      </div>
     </div>
-    <div>
-      <label for="file" class="block text-sm font-medium text-gray-700">Media File</label>
-      <input type="file" id="file" name="file" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
-    </div>
-    <div>
-      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-      <textarea id="description" name="description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"></textarea>
-    </div>
-    <div>
-      <label for="tags" class="block text-sm font-medium text-gray-700">Tags (comma separated)</label>
-      <input type="text" id="tags" name="tags" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
-    </div>
-    <div class="flex justify-end space-x-3">
-      <a href="/media" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</a>
-      <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Upload</button>
-    </div>
-  </form>
+  </div>
 </div>
+
+<script>
+// Tab switching
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = document.querySelectorAll('.upload-tab');
+  const forms = document.querySelectorAll('.upload-form');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      // Remove active class from all tabs and forms
+      tabs.forEach(t => t.classList.remove('active'));
+      forms.forEach(f => f.classList.add('hidden'));
+      
+      // Add active class to clicked tab
+      this.classList.add('active');
+      
+      // Show corresponding form
+      const formId = this.id.replace('Tab', 'Form');
+      document.getElementById(formId).classList.remove('hidden');
+    });
+  });
+
+  // Auto-fill title from filename
+  const fileInput = document.getElementById('file');
+  const titleInput = document.getElementById('title');
+  
+  fileInput.addEventListener('change', function() {
+    if (this.files.length > 0 && !titleInput.value) {
+      const filename = this.files[0].name;
+      const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.')) || filename;
+      titleInput.value = nameWithoutExt.replace(/[_-]/g, ' ');
+    }
+  });
+
+  // Drag and drop functionality
+  const dropZone = document.getElementById('dropZone');
+  const fileList = document.getElementById('fileList');
+  const fileItems = document.getElementById('fileItems');
+  const uploadSettings = document.getElementById('uploadSettings');
+  let selectedFiles = [];
+
+  dropZone.addEventListener('click', function() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = 'image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.rar';
+    input.onchange = function() {
+      handleFiles(this.files);
+    };
+    input.click();
+  });
+
+  dropZone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('border-indigo-400', 'bg-indigo-50');
+  });
+
+  dropZone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    this.classList.remove('border-indigo-400', 'bg-indigo-50');
+  });
+
+  dropZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('border-indigo-400', 'bg-indigo-50');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  function handleFiles(files) {
+    selectedFiles = Array.from(files);
+    displayFiles();
+    fileList.classList.remove('hidden');
+    uploadSettings.classList.remove('hidden');
+  }
+
+  function displayFiles() {
+    fileItems.innerHTML = '';
+    selectedFiles.forEach((file, index) => {
+      const fileItem = document.createElement('div');
+      fileItem.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+      fileItem.innerHTML = `
+        <div class="flex items-center">
+          <i class="fas fa-file text-gray-400 mr-3"></i>
+          <div>
+            <div class="text-sm font-medium text-gray-900">${file.name}</div>
+            <div class="text-xs text-gray-500">${formatFileSize(file.size)}</div>
+          </div>
+        </div>
+        <button onclick="removeFile(${index})" class="text-red-500 hover:text-red-700">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      fileItems.appendChild(fileItem);
+    });
+  }
+
+  window.removeFile = function(index) {
+    selectedFiles.splice(index, 1);
+    displayFiles();
+    if (selectedFiles.length === 0) {
+      fileList.classList.add('hidden');
+      uploadSettings.classList.add('hidden');
+    }
+  };
+
+  document.getElementById('clearFiles').addEventListener('click', function() {
+    selectedFiles = [];
+    fileList.classList.add('hidden');
+    uploadSettings.classList.add('hidden');
+  });
+
+  function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+});
+</script>
+
+<style>
+.upload-tab {
+  @apply border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors;
+}
+
+.upload-tab.active {
+  @apply border-indigo-500 text-indigo-600;
+}
+
+.upload-form {
+  @apply transition-all duration-300;
+}
+
+#dropZone.dragover {
+  @apply border-indigo-400 bg-indigo-50;
+}
+</style>

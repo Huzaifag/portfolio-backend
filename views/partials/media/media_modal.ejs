@@ -28,8 +28,9 @@
 
 <script>
 let currentMediaFolder = '';
+window._mediaModalOnSelect = function() {};
 async function openMediaModal(onSelect) {
-  window._mediaModalOnSelect = onSelect;
+  window._mediaModalOnSelect = typeof onSelect === 'function' ? onSelect : function() {};
   document.getElementById('mediaManagerModal').classList.remove('hidden');
   await loadMediaFolders();
   await loadMediaGrid();
@@ -82,23 +83,30 @@ async function loadMediaGrid(folderId = '') {
     grid.innerHTML = '<div class="col-span-full text-center text-red-400">Failed to load media.</div>';
   }
 }
-document.getElementById('mediaFolderSelect').addEventListener('change', function() {
-  loadMediaGrid(this.value);
-});
-// Upload new media
-document.getElementById('mediaUploadForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const form = e.target;
-  const formData = new FormData(form);
-  if (currentMediaFolder) formData.append('folder', currentMediaFolder);
-  try {
-    const res = await fetch('/api/media', { method: 'POST', body: formData });
-    if (res.ok) {
-      await loadMediaGrid(currentMediaFolder);
-      form.reset();
-    } else {
-      alert('Upload failed');
-    }
-  } catch (e) { alert('Upload failed'); }
+document.addEventListener('DOMContentLoaded', function() {
+  var folderSelect = document.getElementById('mediaFolderSelect');
+  if (folderSelect) {
+    folderSelect.addEventListener('change', function() {
+      loadMediaGrid(this.value);
+    });
+  }
+  var uploadForm = document.getElementById('mediaUploadForm');
+  if (uploadForm) {
+    uploadForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      if (currentMediaFolder) formData.append('folder', currentMediaFolder);
+      try {
+        const res = await fetch('/api/media', { method: 'POST', body: formData });
+        if (res.ok) {
+          await loadMediaGrid(currentMediaFolder);
+          form.reset();
+        } else {
+          alert('Upload failed');
+        }
+      } catch (e) { alert('Upload failed'); }
+    });
+  }
 });
 </script>

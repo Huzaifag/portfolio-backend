@@ -1,0 +1,51 @@
+<% layout('layouts/layout') -%>
+
+    <% block('header', true) %>
+        <% block('sidebar', true) %>
+            <div class="max-w-xl mx-auto mt-10 bg-white rounded-lg shadow p-8">
+                <h1 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-layer-group mr-2 text-indigo-600"></i> Edit Project
+                </h1>
+                <form action="/project/<%= project._id %>" method="POST" class="space-y-6">
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                        <input type="text" id="title" name="title" value="<%= project.title %>" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+                    </div>
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select id="category" name="category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">Select category</option>
+                            <option value="fullstack" <%= project.category === 'fullstack' ? 'selected' : '' %>>Fullstack</option>
+                            <option value="frontend" <%= project.category === 'frontend' ? 'selected' : '' %>>Frontend</option>
+                            <option value="backend" <%= project.category === 'backend' ? 'selected' : '' %>>Backend</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="image" class="block text-sm font-medium text-gray-700">Main Image</label>
+                        <input type="text" id="image" name="image" value="<%= project.image %>" required placeholder="Click to select from media" readonly class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer bg-gray-50" onclick="openMediaModal(function(id, url) { document.getElementById('image').value = url; })" />
+                    </div>
+                    <div>
+                        <label for="shortDetail" class="block text-sm font-medium text-gray-700">Short Detail</label>
+                        <textarea id="shortDetail" name="shortDetail" rows="2" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"><%= project.shortDetail %></textarea>
+                    </div>
+                    <div>
+                        <label for="gitLink" class="block text-sm font-medium text-gray-700">GitHub Link</label>
+                        <input type="url" id="gitLink" name="gitLink" value="<%= project.gitLink %>" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+                    </div>
+                    <div>
+                        <label for="screenshots" class="block text-sm font-medium text-gray-700">Screenshots</label>
+                        <input type="text" id="screenshots" name="screenshots" value="<%= project.screenshots ? project.screenshots.join(',') : '' %>" placeholder="Click to select from media (comma separated)" readonly class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer bg-gray-50" onclick="openMediaModal(function(id, url) { var el = document.getElementById('screenshots'); el.value = el.value ? (el.value + ',' + url) : url; })" />
+                        <small class="text-gray-500">Hold Ctrl (Cmd) to select multiple in media modal.</small>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <a href="/project"
+                            class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</a>
+                        <button type="submit"
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Update
+                        </button>
+                    </div>
+                </form>
+                <%- include('../../partials/media/media_modal') %>
+            </div>

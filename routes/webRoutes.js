@@ -1,11 +1,74 @@
 
-
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const mediaFolderController = require('../controllers/mediaFolderController');
 const mediaController = require('../controllers/mediaController');
 const certificationController = require('../controllers/certificationController');
+const skillController = require('../controllers/skillController.ejs');
+const projectController = require('../controllers/projectController.ejs');
+const experienceController = require('../controllers/experienceController.ejs');
+const settingsController = require('../controllers/settingsController');
+
+// Help page route
+router.get('/help', (req, res) => {
+  res.render('pages/help/index', { title: 'Help & Guide' });
+});
+// Settings routes
+router.get('/settings', authController.requireAdmin, settingsController.getSettings);
+router.post('/settings/profile', authController.requireAdmin, settingsController.updateProfile);
+router.post('/settings/password', authController.requireAdmin, settingsController.changePassword);
+// Redirect /skills to /skill for convenience
+router.get('/skills', (req, res) => res.redirect('/skill'));
+
+
+// Index - list all skills
+router.get('/skill', authController.requireAdmin, skillController.index);
+// New - show form
+router.get('/skill/create', authController.requireAdmin, skillController.createForm);
+// Create
+router.post('/skill', authController.requireAdmin, skillController.create);
+// Show
+router.get('/skill/:id', authController.requireAdmin, skillController.show);
+// Edit - show form
+router.get('/skill/:id/edit', authController.requireAdmin, skillController.editForm);
+// Update
+router.post('/skill/:id', authController.requireAdmin, skillController.update);
+// Delete
+router.post('/skill/:id/delete', authController.requireAdmin, skillController.delete);
+
+// Public route for project list (unprotected)
+router.get('/projects', projectController.index);
+
+// Index - list all projects
+router.get('/project', authController.requireAdmin, projectController.index);
+// New - show form
+router.get('/project/create', authController.requireAdmin, projectController.createForm);
+// Create
+router.post('/project', authController.requireAdmin, projectController.create);
+// Show
+router.get('/project/:id', authController.requireAdmin, projectController.show);
+// Edit - show form
+router.get('/project/:id/edit', authController.requireAdmin, projectController.editForm);
+// Update
+router.post('/project/:id', authController.requireAdmin, projectController.update);
+// Delete
+router.post('/project/:id/delete', authController.requireAdmin, projectController.delete);
+
+// Index - list all experiences
+router.get('/experience', authController.requireAdmin, experienceController.index);
+// New - show form
+router.get('/experience/create', authController.requireAdmin, experienceController.createForm);
+// Create
+router.post('/experience', authController.requireAdmin, experienceController.create);
+// Show
+router.get('/experience/:id', authController.requireAdmin, experienceController.show);
+// Edit - show form
+router.get('/experience/:id/edit', authController.requireAdmin, experienceController.editForm);
+// Update
+router.post('/experience/:id', authController.requireAdmin, experienceController.update);
+// Delete
+router.post('/experience/:id/delete', authController.requireAdmin, experienceController.delete);
 // Certification CRUD (EJS views)
 router.get('/certifications', authController.requireAdmin, certificationController.index);
 router.get('/certifications/new', authController.requireAdmin, certificationController.createForm);
@@ -23,22 +86,26 @@ router.get('/media/folder/:folderId', authController.requireAdmin, mediaFolderCo
 // Create folder
 router.post('/media/folder', authController.requireAdmin, mediaFolderController.createFolder);
 
-// Rename folder
+// Rename/Update folder
 router.post('/media/folder/:folderId/rename', authController.requireAdmin, mediaFolderController.renameFolder);
 
 // Delete folder
 router.post('/media/folder/:folderId/delete', authController.requireAdmin, mediaFolderController.deleteFolder);
 
-// Media CRUD (EJS views)
-// Index - list all media
-router.get('/media', authController.requireAdmin, mediaController.index);
+// Move folder
+router.post('/media/folder/:folderId/move', authController.requireAdmin, mediaFolderController.moveFolder);
 
+// Media CRUD (EJS views)
 // New - show form
 router.get('/media/new', authController.requireAdmin, mediaController.createForm);
 
-const upload = require('../middleware/upload');
+const { single, multiple } = require('../middleware/upload');
+
 // Create (with file upload)
-router.post('/media', authController.requireAdmin, upload.single('file'), mediaController.create);
+router.post('/media', authController.requireAdmin, ...single('file'), mediaController.create);
+
+// Bulk upload
+router.post('/media/bulk', authController.requireAdmin, ...multiple('files', 10), mediaController.bulkCreate);
 
 // Show
 router.get('/media/:id', authController.requireAdmin, mediaController.show);
@@ -48,6 +115,13 @@ router.get('/media/:id/edit', authController.requireAdmin, mediaController.editF
 
 // Update
 router.post('/media/:id', authController.requireAdmin, mediaController.update);
+
+// Delete
+router.post('/media/:id/delete', authController.requireAdmin, mediaController.delete);
+
+// Bulk operations
+router.post('/media/bulk-delete', authController.requireAdmin, mediaController.bulkDelete);
+router.post('/media/bulk-move', authController.requireAdmin, mediaController.move);
 
 // Delete
 router.post('/media/:id/delete', authController.requireAdmin, mediaController.delete);

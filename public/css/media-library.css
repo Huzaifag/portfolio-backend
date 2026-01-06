@@ -1,0 +1,408 @@
+/* Premium Media Library Styles */
+
+/* Base button styles */
+.btn-primary {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200;
+}
+
+.btn-outline {
+  @apply inline-flex items-center px-4 py-2 border border-indigo-300 text-sm font-medium rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200;
+}
+
+.btn-danger {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200;
+}
+
+/* Button sizes */
+.btn-sm {
+  @apply px-3 py-1.5 text-xs font-medium rounded-md;
+}
+
+.btn-xs {
+  @apply px-2 py-1 text-xs font-medium rounded;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-base font-medium rounded-xl;
+}
+
+/* Media grid animations */
+.media-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.media-item:hover {
+  transform: translateY(-2px);
+}
+
+.media-item.selected {
+  @apply ring-2 ring-indigo-500 ring-offset-2;
+}
+
+/* Upload area styles */
+.upload-zone {
+  transition: all 0.3s ease;
+}
+
+.upload-zone.dragover {
+  @apply border-indigo-400 bg-indigo-50 scale-105;
+}
+
+.upload-zone:hover {
+  @apply border-indigo-300 bg-indigo-25;
+}
+
+/* Progress bar animations */
+.progress-bar {
+  transition: width 0.3s ease;
+}
+
+/* Modal animations */
+.modal-enter {
+  animation: modalEnter 0.3s ease-out;
+}
+
+.modal-exit {
+  animation: modalExit 0.3s ease-in;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modalExit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9) translateY(-10px);
+  }
+}
+
+/* Notification animations */
+.notification-enter {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.notification-exit {
+  animation: slideOutRight 0.3s ease-in;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Loading states */
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* File type icons */
+.file-icon {
+  @apply w-12 h-12 flex items-center justify-center rounded-lg text-2xl;
+}
+
+.file-icon.image {
+  @apply bg-green-100 text-green-600;
+}
+
+.file-icon.video {
+  @apply bg-blue-100 text-blue-600;
+}
+
+.file-icon.audio {
+  @apply bg-purple-100 text-purple-600;
+}
+
+.file-icon.document {
+  @apply bg-red-100 text-red-600;
+}
+
+.file-icon.other {
+  @apply bg-gray-100 text-gray-600;
+}
+
+/* Folder colors */
+.folder-blue {
+  @apply bg-blue-100 text-blue-600 border-blue-200;
+}
+
+.folder-green {
+  @apply bg-green-100 text-green-600 border-green-200;
+}
+
+.folder-yellow {
+  @apply bg-yellow-100 text-yellow-600 border-yellow-200;
+}
+
+.folder-red {
+  @apply bg-red-100 text-red-600 border-red-200;
+}
+
+.folder-purple {
+  @apply bg-purple-100 text-purple-600 border-purple-200;
+}
+
+.folder-indigo {
+  @apply bg-indigo-100 text-indigo-600 border-indigo-200;
+}
+
+/* Search highlight */
+.search-highlight {
+  @apply bg-yellow-200 px-1 rounded;
+}
+
+/* Drag and drop styles */
+.drag-over {
+  @apply border-2 border-dashed border-indigo-400 bg-indigo-50;
+}
+
+.drag-item {
+  @apply opacity-50 transform scale-95;
+}
+
+/* Responsive grid */
+@media (max-width: 640px) {
+  .media-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .media-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .media-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .media-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1281px) {
+  .media-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* List view styles */
+.list-view .media-item {
+  @apply w-full;
+}
+
+.list-view .media-grid {
+  @apply flex flex-col space-y-4;
+}
+
+/* Checkbox styles */
+.media-checkbox {
+  @apply w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 focus:ring-offset-0;
+}
+
+.media-checkbox:checked {
+  @apply bg-indigo-600 border-indigo-600;
+}
+
+/* Tag styles */
+.tag {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.tag-blue {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.tag-green {
+  @apply bg-green-100 text-green-800;
+}
+
+.tag-yellow {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.tag-red {
+  @apply bg-red-100 text-red-800;
+}
+
+.tag-purple {
+  @apply bg-purple-100 text-purple-800;
+}
+
+.tag-indigo {
+  @apply bg-indigo-100 text-indigo-800;
+}
+
+/* Upload progress */
+.upload-progress {
+  @apply w-full bg-gray-200 rounded-full h-2;
+}
+
+.upload-progress-bar {
+  @apply bg-indigo-600 h-2 rounded-full transition-all duration-300 ease-out;
+}
+
+/* Breadcrumb styles */
+.breadcrumb {
+  @apply flex items-center space-x-2 text-sm text-gray-600;
+}
+
+.breadcrumb-item {
+  @apply hover:text-indigo-600 transition-colors cursor-pointer;
+}
+
+.breadcrumb-separator {
+  @apply text-gray-400;
+}
+
+/* Statistics cards */
+.stat-card {
+  @apply bg-gradient-to-r p-4 rounded-lg text-white;
+}
+
+.stat-card.blue {
+  @apply from-blue-500 to-blue-600;
+}
+
+.stat-card.green {
+  @apply from-green-500 to-green-600;
+}
+
+.stat-card.purple {
+  @apply from-purple-500 to-purple-600;
+}
+
+.stat-card.yellow {
+  @apply from-yellow-500 to-yellow-600;
+}
+
+.stat-card.red {
+  @apply from-red-500 to-red-600;
+}
+
+/* Tooltip styles */
+.tooltip {
+  @apply absolute z-50 px-2 py-1 text-xs text-white bg-gray-900 rounded shadow-lg opacity-0 pointer-events-none transition-opacity duration-200;
+}
+
+.tooltip.show {
+  @apply opacity-100;
+}
+
+/* Focus styles for accessibility */
+.focus-visible {
+  @apply outline-none ring-2 ring-indigo-500 ring-offset-2;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .media-item {
+    break-inside: avoid;
+  }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .dark-mode {
+    @apply bg-gray-900 text-white;
+  }
+  
+  .dark-mode .bg-white {
+    @apply bg-gray-800;
+  }
+  
+  .dark-mode .text-gray-900 {
+    @apply text-white;
+  }
+  
+  .dark-mode .text-gray-600 {
+    @apply text-gray-300;
+  }
+  
+  .dark-mode .border-gray-200 {
+    @apply border-gray-700;
+  }
+}

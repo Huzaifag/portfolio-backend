@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume Template</title>
+    <!-- Importing a stylish, highly legible font pairing -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS VARIABLES 
+           Updated with the new "Inter" font stack.
+        */
+        :root {
+            --primary-text: #111827;
+            --secondary-text: #4b5563;
+            --accent-color: #1d4ed8;
+            --border-color: #e5e7eb;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --page-width: 210mm; /* A4 Width */
+            --page-height: 297mm; /* A4 Height */
+        }
+
+        /* RESET & BASE STYLES */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--primary-text);
+            background-color: #f3f4f6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-print-color-adjust: exact;
+        }
+
+        /* PAGE CONTAINER */
+        .resume-page {
+            background: white;
+            width: var(--page-width);
+            min-height: var(--page-height);
+            margin: 20px auto;
+            padding: 50px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* PRINT STYLING */
+        @media print {
+            body {
+                background: none;
+            }
+            .resume-page {
+                margin: 0;
+                box-shadow: none;
+                width: 100%;
+                height: 100%;
+                padding: 0.5in;
+            }
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            section, .experience-item, .education-item {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* HEADER & CONTACT INFO */
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 28pt;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .contact-info {
+            font-size: 9.5pt;
+            color: var(--secondary-text);
+            font-weight: 400;
+        }
+
+        .contact-info span:not(:last-child)::after {
+            content: " • ";
+            margin: 0 8px;
+            color: #9ca3af;
+        }
+
+        /* SECTION TITLES */
+        h2 {
+            font-size: 13pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 12px;
+            margin-top: 25px;
+            color: var(--accent-color);
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        /* SUMMARY */
+        .summary p {
+            font-size: 10.5pt;
+            color: var(--secondary-text);
+        }
+
+        /* EXPERIENCE & EDUCATION */
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-weight: 700;
+            font-size: 11pt;
+            color: #000;
+        }
+
+        .item-subheader {
+            display: flex;
+            justify-content: space-between;
+            font-style: normal;
+            font-weight: 500;
+            color: var(--secondary-text);
+            font-size: 10pt;
+            margin-bottom: 6px;
+        }
+
+        ul {
+            margin-left: 18px;
+            font-size: 10pt;
+            color: var(--secondary-text);
+            margin-bottom: 12px;
+        }
+
+        li {
+            margin-bottom: 4px;
+            padding-left: 5px;
+        }
+
+        /* SKILLS GRID */
+        .skills-container {
+            font-size: 10pt;
+            line-height: 1.8;
+        }
+
+        .skill-category {
+            font-weight: 700;
+            color: var(--primary-text);
+        }
+
+        /* ACTIONS */
+        .no-print {
+            text-align: center;
+            margin-top: 20px;
+            padding-bottom: 40px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: var(--font-main);
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        @media print {
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="resume-page">
+        <!-- HEADER -->
+        <header>
+            <h1>John Doe</h1>
+            <div class="contact-info">
+                <span>San Francisco, CA</span>
+                <span>(555) 000-0000</span>
+                <span>john.doe@email.com</span>
+                <span>linkedin.com/in/johndoe</span>
+            </div>
+        </header>
+
+        <!-- PROFESSIONAL SUMMARY -->
+        <section class="summary">
+            <h2>Professional Summary</h2>
+            <p>
+                Highly motivated and results-oriented Professional with over 5 years of experience in high-growth technology sectors. Proven track record of optimizing complex workflows, leading diverse cross-functional teams, and delivering high-impact projects. Expert in bridging the gap between technical requirements and business objectives.
+            </p>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section class="experience">
+            <h2>Work Experience</h2>
+            
+            <div class="experience-item">
+                <div class="item-header">
+                    <span>Senior Project Manager</span>
+                    <span>Jan 2020 – Present</span>
+                </div>
+                <div class="item-subheader">
+                    <span>Tech Solutions Inc.</span>
+                    <span>San Francisco, CA</span>
+                </div>
+                <ul>
+                    <li>Led a team of 15 developers to launch a mobile application that gained 100k+ downloads in the first quarter.</li>
+                    <li>Reduced operational costs by 15% through the implementation of automated CI/CD pipelines.</li>
+                    <li>Collaborated with stakeholders to define project scope and technical requirements for multi-million dollar contracts.</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="item-header">
+                    <span>Junior Operations Analyst</span>
+                    <span>June 2017 – Dec 2019</span>
+                </div>
+                <div class="item-subheader">
+                    <span>DataCorp Systems</span>
+                    <span>Austin, TX</span>
+                </div>
+                <ul>
+                    <li>Analyzed large datasets using SQL and Python to identify market trends, resulting in a 10% increase in sales leads.</li>
+                    <li>Streamlined internal reporting processes, saving the department approximately 20 man-hours per week.</li>
+                    <li>Assisted in the migration of legacy data to cloud-based infrastructure (AWS).</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- EDUCATION -->
+        <section class="education">
+            <h2>Education</h2>
+            <div class="education-item">
+                <div class="item-header">
+                    <span>Bachelor of Science in Computer Science</span>
+                    <span>Graduated May 2017</span>
+                </div>
+                <div class="item-subheader">
+                    <span>University of State</span>
+                    <span>GPA: 3.8/4.0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section class="skills">
+            <h2>Skills</h2>
+            <div class="skills-container">
+                <p><span class="skill-category">Technical:</span> Python, SQL, JavaScript, React, AWS, Docker, Git, CI/CD.</p>
+                <p><span class="skill-category">Soft Skills:</span> Project Management, Strategic Planning, Public Speaking, Agile/Scrum.</p>
+            </div>
+        </section>
+
+        <!-- CERTIFICATIONS -->
+        <section class="certifications">
+            <h2>Certifications</h2>
+            <ul>
+                <li>Project Management Professional (PMP)</li>
+                <li>AWS Certified Solutions Architect</li>
+            </ul>
+        </section>
+    </div>
+
+</body>
+</html>

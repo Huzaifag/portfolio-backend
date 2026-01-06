@@ -1,0 +1,41 @@
+<% layout('layouts/layout') -%>
+
+    <% block('header', true) %>
+        <% block('sidebar', true) %>
+            <div class="max-w-xl mx-auto mt-10 bg-white rounded-lg shadow p-8">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-layer-group mr-2 text-indigo-600"></i>
+                        <%= project.title %>
+                    </h1>
+                    <p class="text-indigo-600 font-semibold mb-1">
+                        <%= project.category %>
+                    </p>
+                    <p class="text-gray-700 mb-1">
+                        <strong>GitHub:</strong> <a href="<%= project.gitLink %>" target="_blank" class="text-blue-600 hover:underline"><%= project.gitLink %></a>
+                    </p>
+                    <p class="text-gray-700 mb-2">
+                        <%= project.shortDetail %>
+                    </p>
+                    <div class="mb-4">
+                        <img src="<%= project.image %>" alt="Project Main Image" class="rounded shadow w-full max-h-60 object-cover" />
+                    </div>
+                    <% if (project.screenshots && project.screenshots.length) { %>
+                    <div class="mb-4">
+                        <h2 class="text-lg font-semibold mb-2">Screenshots</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <% project.screenshots.forEach(function(screenshot) { %>
+                                <img src="<%= screenshot %>" alt="Screenshot" class="rounded shadow w-full max-h-60 object-cover" />
+                            <% }) %>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <a href="/project"
+                        class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Back
+                        to List</a>
+                    <a href="/project/<%= project._id %>/edit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">Edit</a>
+                </div>
+            </div>

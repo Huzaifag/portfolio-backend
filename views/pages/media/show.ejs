@@ -1,26 +1,520 @@
 <% layout('layouts/layout') -%>
 <% block('header', true) %>
 <% block('sidebar', true) %>
-<div class="max-w-xl mx-auto mt-10 bg-white rounded-lg shadow p-8">
-  <h1 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-    <i class="fas fa-photo-video mr-2 text-indigo-600"></i> <%= media.title %>
-  </h1>
-  <div class="mb-4">
-    <strong>Type:</strong> <%= media.type %><br>
-    <strong>Uploaded:</strong> <%= media.uploadedAt.toLocaleDateString() %><br>
-    <strong>Description:</strong> <%= media.description %><br>
-    <strong>Tags:</strong> <%= media.tags && media.tags.length ? media.tags.join(', ') : 'None' %><br>
-    <strong>URL:</strong> <a href="<%= media.url %>" class="text-indigo-600 underline" target="_blank"><%= media.url %></a>
+
+<div class="max-w-6xl mx-auto mt-8 px-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+        <i class="fas fa-<%= getFileIcon(media.type) %> mr-4 text-indigo-600"></i>
+        <%= media.title %>
+      </h1>
+      <div class="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+        <span class="flex items-center">
+          <i class="fas fa-tag mr-1"></i>
+          <span class="capitalize"><%= media.type %></span>
+        </span>
+        <span class="flex items-center">
+          <i class="fas fa-calendar mr-1"></i>
+          <%= media.uploadedAt.toLocaleDateString() %>
+        </span>
+        <span class="flex items-center">
+          <i class="fas fa-hdd mr-1"></i>
+          <%= formatFileSize(media.fileSize || 0) %>
+        </span>
+        <% if (media.downloadCount > 0) { %>
+          <span class="flex items-center">
+            <i class="fas fa-download mr-1"></i>
+            <%= media.downloadCount %> downloads
+          </span>
+        <% } %>
+      </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="flex space-x-3">
+      <a href="<%= media.url %>" download class="btn-secondary">
+        <i class="fas fa-download mr-2"></i>
+        Download
+      </a>
+      <button onclick="copyToClipboard('<%= media.url %>')" class="btn-outline">
+        <i class="fas fa-copy mr-2"></i>
+        Copy URL
+      </button>
+      <a href="/media/<%= media._id %>/edit" class="btn-primary">
+        <i class="fas fa-edit mr-2"></i>
+        Edit
+      </a>
+    </div>
   </div>
-  <% if (media.type === 'image') { %>
-    <img src="<%= media.url %>" alt="<%= media.title %>" class="w-full rounded shadow mb-4" />
-  <% } else if (media.type === 'video') { %>
-    <video src="<%= media.url %>" controls class="w-full rounded shadow mb-4"></video>
-  <% } else if (media.type === 'audio') { %>
-    <audio src="<%= media.url %>" controls class="w-full mb-4"></audio>
-  <% } %>
-  <div class="flex justify-end space-x-3 mt-6">
-    <a href="/media" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Back to List</a>
-    <a href="/media/<%= media._id %>/edit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700">Edit</a>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Media Preview -->
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <!-- Media Display -->
+        <div class="aspect-video bg-gray-100 flex items-center justify-center">
+          <% if (media.type === 'image') { %>
+            <img src="<%= media.url %>" 
+                 alt="<%= media.title %>" 
+                 class="max-w-full max-h-full object-contain cursor-pointer"
+                 onclick="openImageModal('<%= media.url %>', '<%= media.title %>')" />
+          <% } else if (media.type === 'video') { %>
+            <video controls class="max-w-full max-h-full" preload="metadata">
+              <source src="<%= media.url %>" type="<%= media.mimeType %>">
+              Your browser does not support the video tag.
+            </video>
+          <% } else if (media.type === 'audio') { %>
+            <div class="text-center p-8">
+              <i class="fas fa-music text-6xl text-gray-400 mb-6"></i>
+              <h3 class="text-lg font-semibold text-gray-900 mb-4"><%= media.title %></h3>
+              <audio controls class="w-full max-w-md">
+                <source src="<%= media.url %>" type="<%= media.mimeType %>">
+                Your browser does not support the audio tag.
+              </audio>
+            </div>
+          <% } else if (media.type === 'document' || media.type === 'resume') { %>
+            <div class="text-center p-8">
+              <i class="fas fa-file-pdf text-6xl text-red-500 mb-6"></i>
+              <h3 class="text-lg font-semibold text-gray-900 mb-4"><%= media.title %></h3>
+              <div class="space-y-3">
+                <% if (media.mimeType === 'application/pdf') { %>
+                  <button onclick="openPdfViewer('<%= media.url %>')" class="btn-primary">
+                    <i class="fas fa-eye mr-2"></i>
+                    View PDF
+                  </button>
+                <% } %>
+                <a href="<%= media.url %>" target="_blank" class="btn-secondary block">
+                  <i class="fas fa-external-link-alt mr-2"></i>
+                  Open in New Tab
+                </a>
+              </div>
+            </div>
+          <% } else { %>
+            <div class="text-center p-8">
+              <i class="fas fa-file text-6xl text-gray-400 mb-6"></i>
+              <h3 class="text-lg font-semibold text-gray-900 mb-4"><%= media.title %></h3>
+              <p class="text-gray-600 mb-4">File type: <%= media.mimeType || 'Unknown' %></p>
+              <a href="<%= media.url %>" target="_blank" class="btn-primary">
+                <i class="fas fa-external-link-alt mr-2"></i>
+                Open File
+              </a>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Media Actions Bar -->
+        <div class="p-4 bg-gray-50 border-t border-gray-200">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <button onclick="toggleFavorite('<%= media._id %>')" class="text-gray-500 hover:text-red-500 transition-colors">
+                <i class="fas fa-heart"></i>
+              </button>
+              <button onclick="shareMedia('<%= media._id %>')" class="text-gray-500 hover:text-blue-500 transition-colors">
+                <i class="fas fa-share-alt"></i>
+              </button>
+              <button onclick="reportMedia('<%= media._id %>')" class="text-gray-500 hover:text-yellow-500 transition-colors">
+                <i class="fas fa-flag"></i>
+              </button>
+            </div>
+            <div class="flex items-center space-x-2 text-sm text-gray-500">
+              <span>Views: <%= media.downloadCount || 0 %></span>
+              <span>•</span>
+              <span>Size: <%= formatFileSize(media.fileSize || 0) %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description and Tags -->
+      <% if (media.description || (media.tags && media.tags.length > 0)) { %>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
+          <% if (media.description) { %>
+            <div class="mb-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-3">Description</h3>
+              <p class="text-gray-700 leading-relaxed"><%= media.description %></p>
+            </div>
+          <% } %>
+          
+          <% if (media.tags && media.tags.length > 0) { %>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-3">Tags</h3>
+              <div class="flex flex-wrap gap-2">
+                <% media.tags.forEach(tag => { %>
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors cursor-pointer"
+                        onclick="searchByTag('<%= tag %>')">
+                    <i class="fas fa-tag mr-1 text-xs"></i>
+                    <%= tag %>
+                  </span>
+                <% }) %>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="lg:col-span-1 space-y-6">
+      <!-- File Information -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">File Information</h3>
+        
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-500">Original Name:</span>
+            <span class="font-medium text-right"><%= media.originalName || media.title %></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">File Type:</span>
+            <span class="font-medium capitalize"><%= media.type %></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">MIME Type:</span>
+            <span class="font-medium text-right"><%= media.mimeType || 'Unknown' %></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">File Size:</span>
+            <span class="font-medium"><%= formatFileSize(media.fileSize || 0) %></span>
+          </div>
+          <% if (media.dimensions && media.dimensions.width) { %>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Dimensions:</span>
+              <span class="font-medium"><%= media.dimensions.width %>×<%= media.dimensions.height %></span>
+            </div>
+          <% } %>
+          <% if (media.duration) { %>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Duration:</span>
+              <span class="font-medium"><%= formatDuration(media.duration) %></span>
+            </div>
+          <% } %>
+          <div class="flex justify-between">
+            <span class="text-gray-500">Uploaded:</span>
+            <span class="font-medium"><%= media.uploadedAt.toLocaleDateString() %></span>
+          </div>
+          <% if (media.updatedAt && media.updatedAt.getTime() !== media.uploadedAt.getTime()) { %>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Modified:</span>
+              <span class="font-medium"><%= media.updatedAt.toLocaleDateString() %></span>
+            </div>
+          <% } %>
+          <% if (media.uploadedBy) { %>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Uploaded By:</span>
+              <span class="font-medium"><%= media.uploadedBy.username || 'Unknown' %></span>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Location</h3>
+        
+        <div class="flex items-center space-x-2 text-sm">
+          <i class="fas fa-folder text-gray-400"></i>
+          <% if (media.folder) { %>
+            <a href="/media/folder/<%= media.folder._id %>" class="text-indigo-600 hover:text-indigo-800 transition-colors">
+              <%= media.folder.name %>
+            </a>
+          <% } else { %>
+            <a href="/media" class="text-indigo-600 hover:text-indigo-800 transition-colors">
+              Root Directory
+            </a>
+          <% } %>
+        </div>
+        
+        <div class="mt-4">
+          <button onclick="moveMedia('<%= media._id %>')" class="w-full btn-outline text-sm">
+            <i class="fas fa-arrows-alt mr-2"></i>
+            Move to Different Folder
+          </button>
+        </div>
+      </div>
+
+      <!-- Usage Statistics -->
+      <% if (media.downloadCount > 0 || media.lastAccessed) { %>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Usage Statistics</h3>
+          
+          <div class="space-y-3 text-sm">
+            <% if (media.downloadCount > 0) { %>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Total Downloads:</span>
+                <span class="font-medium"><%= media.downloadCount %></span>
+              </div>
+            <% } %>
+            <% if (media.lastAccessed) { %>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Last Accessed:</span>
+                <span class="font-medium"><%= media.lastAccessed.toLocaleDateString() %></span>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        
+        <div class="space-y-3">
+          <a href="/media/<%= media._id %>/edit" class="w-full btn-primary text-center">
+            <i class="fas fa-edit mr-2"></i>
+            Edit Media
+          </a>
+          <button onclick="duplicateMedia('<%= media._id %>')" class="w-full btn-secondary">
+            <i class="fas fa-copy mr-2"></i>
+            Duplicate
+          </button>
+          <button onclick="deleteMedia('<%= media._id %>')" class="w-full btn-danger">
+            <i class="fas fa-trash mr-2"></i>
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Navigation</h3>
+        
+        <div class="space-y-3">
+          <a href="/media<%= media.folder ? '/folder/' + media.folder._id : '' %>" class="w-full btn-outline text-center">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Library
+          </a>
+          <a href="/media" class="w-full btn-outline text-center">
+            <i class="fas fa-home mr-2"></i>
+            All Media
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black bg-opacity-90">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="relative max-w-full max-h-full">
+      <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white text-2xl hover:text-gray-300 z-10">
+        <i class="fas fa-times"></i>
+      </button>
+      <img id="modalImage" src="" alt="" class="max-w-full max-h-full object-contain">
+    </div>
+  </div>
+</div>
+
+<!-- PDF Viewer Modal -->
+<div id="pdfModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black bg-opacity-90">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="relative w-full max-w-6xl h-full max-h-screen bg-white rounded-lg overflow-hidden">
+      <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">PDF Viewer</h3>
+        <button onclick="closePdfViewer()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <iframe id="pdfFrame" src="" class="w-full h-full" style="height: calc(100vh - 120px);"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+function openImageModal(src, title) {
+  const modal = document.getElementById('imageModal');
+  const image = document.getElementById('modalImage');
+  image.src = src;
+  image.alt = title;
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal() {
+  const modal = document.getElementById('imageModal');
+  modal.classList.add('hidden');
+  document.body.style.overflow = 'auto';
+}
+
+function openPdfViewer(src) {
+  const modal = document.getElementById('pdfModal');
+  const frame = document.getElementById('pdfFrame');
+  frame.src = src;
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePdfViewer() {
+  const modal = document.getElementById('pdfModal');
+  modal.classList.add('hidden');
+  document.body.style.overflow = 'auto';
+}
+
+function copyToClipboard(text) {
+  const fullUrl = window.location.origin + text;
+  navigator.clipboard.writeText(fullUrl).then(() => {
+    showNotification('URL copied to clipboard!', 'success');
+  }).catch(() => {
+    showNotification('Failed to copy URL', 'error');
+  });
+}
+
+function searchByTag(tag) {
+  window.location.href = `/media?search=${encodeURIComponent(tag)}`;
+}
+
+function toggleFavorite(mediaId) {
+  // Implementation for favorite functionality
+  showNotification('Favorite feature coming soon!', 'info');
+}
+
+function shareMedia(mediaId) {
+  const url = window.location.href;
+  if (navigator.share) {
+    navigator.share({
+      title: '<%= media.title %>',
+      url: url
+    });
+  } else {
+    copyToClipboard(url);
+    showNotification('Media URL copied to clipboard!', 'success');
+  }
+}
+
+function reportMedia(mediaId) {
+  // Implementation for report functionality
+  showNotification('Report feature coming soon!', 'info');
+}
+
+function moveMedia(mediaId) {
+  // Implementation for move functionality
+  showNotification('Move feature coming soon!', 'info');
+}
+
+function duplicateMedia(mediaId) {
+  // Implementation for duplicate functionality
+  showNotification('Duplicate feature coming soon!', 'info');
+}
+
+function deleteMedia(mediaId) {
+  if (confirm('Are you sure you want to delete this media file? This action cannot be undone.')) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/media/${mediaId}/delete`;
+    document.body.appendChild(form);
+    form.submit();
+  }
+}
+
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transition-all duration-300 transform translate-x-full ${
+    type === 'success' ? 'bg-green-500 text-white' :
+    type === 'error' ? 'bg-red-500 text-white' :
+    type === 'warning' ? 'bg-yellow-500 text-white' :
+    'bg-blue-500 text-white'
+  }`;
+  
+  notification.innerHTML = `
+    <div class="flex items-center">
+      <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} mr-3"></i>
+      <span>${message}</span>
+      <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => {
+    notification.classList.remove('translate-x-full');
+  }, 100);
+  
+  // Auto remove after 5 seconds
+  setTimeout(() => {
+    notification.classList.add('translate-x-full');
+    setTimeout(() => {
+      if (notification.parentElement) {
+        notification.parentElement.removeChild(notification);
+      }
+    }, 300);
+  }, 5000);
+}
+
+// Close modals on escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeImageModal();
+    closePdfViewer();
+  }
+});
+
+// Close modals on background click
+document.getElementById('imageModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeImageModal();
+  }
+});
+
+document.getElementById('pdfModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closePdfViewer();
+  }
+});
+</script>
+
+<style>
+.btn-primary {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors;
+}
+
+.btn-outline {
+  @apply inline-flex items-center px-4 py-2 border border-indigo-300 text-sm font-medium rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors;
+}
+
+.btn-danger {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors;
+}
+</style>
+
+<%
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function formatDuration(seconds) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  } else {
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  }
+}
+
+function getFileIcon(type) {
+  const icons = {
+    image: 'image',
+    video: 'video',
+    audio: 'music',
+    document: 'file-alt',
+    resume: 'file-pdf',
+    other: 'file'
+  };
+  return icons[type] || 'file';
+}
+%>

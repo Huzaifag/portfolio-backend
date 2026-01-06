@@ -1,75 +1,478 @@
 <% layout('layouts/layout') -%>
 <% block('header', true) %>
 <% block('sidebar', true) %>
-<div class="max-w-7xl mx-auto mt-12 px-4">
-  <div class="flex flex-col sm:flex-row items-center justify-between mb-10 gap-4">
-    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center drop-shadow-lg">
-      <i class="fas fa-photo-video mr-3 text-indigo-600 text-4xl"></i> Media Library
+
+<!-- Enhanced Media Library with Premium Features -->
+<div class="max-w-full mx-auto mt-8 px-6">
+  <!-- Header Section -->
+  <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4">
+    <div class="flex items-center">
+      <h1 class="text-4xl font-bold text-gray-900 flex items-center">
+        <i class="fas fa-photo-video mr-4 text-indigo-600"></i>
+        Media Library
+      </h1>
       <% if (currentFolder) { %>
-        <span class="ml-3 text-lg text-gray-400 font-medium">/ <%= currentFolder.name %></span>
+        <div class="ml-4 flex items-center text-lg text-gray-600">
+          <i class="fas fa-chevron-right mx-2"></i>
+          <span class="font-medium" style="color: <%= currentFolder.color %>">
+            <i class="fas fa-<%= currentFolder.icon %> mr-2"></i>
+            <%= currentFolder.name %>
+          </span>
+        </div>
       <% } %>
-    </h1>
+    </div>
+    
+    <!-- Action Buttons -->
     <div class="flex flex-wrap gap-3 items-center">
-      <form action="/media/folder" method="POST" class="flex items-center gap-2 bg-white rounded-lg shadow px-2 py-1 border border-gray-200">
-        <input type="hidden" name="parent" value="<%= currentFolder ? currentFolder._id : '' %>" />
-        <input type="text" name="name" placeholder="New Folder" required class="border-none focus:ring-0 px-2 py-1 text-sm bg-transparent" />
-        <button type="submit" class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-3 py-1 rounded hover:from-indigo-600 hover:to-purple-600 text-sm font-semibold shadow">Create Folder</button>
-      </form>
-      <a href="/media/new<%= currentFolder ? '?folder=' + currentFolder._id : '' %>" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-semibold rounded-lg shadow bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition">
-        <i class="fas fa-plus mr-2"></i> Upload Media
+      <button id="bulkUploadBtn" class="btn-primary">
+        <i class="fas fa-cloud-upload-alt mr-2"></i>
+        Bulk Upload
+      </button>
+      <a href="/media/new<%= currentFolder ? '?folder=' + currentFolder._id : '' %>" class="btn-secondary">
+        <i class="fas fa-plus mr-2"></i>
+        Upload Media
       </a>
-      <% if (currentFolder) { %>
-        <a href="<%= currentFolder.parent ? '/media/folder/' + currentFolder.parent : '/media' %>" class="ml-2 text-sm text-gray-400 hover:text-indigo-600 font-medium transition">Back</a>
-      <% } %>
+      <button id="createFolderBtn" class="btn-outline">
+        <i class="fas fa-folder-plus mr-2"></i>
+        New Folder
+      </button>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+  <!-- Breadcrumb Navigation -->
+  <% if (breadcrumbs && breadcrumbs.length > 0) { %>
+    <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-6 bg-gray-50 px-4 py-2 rounded-lg">
+      <a href="/media" class="hover:text-indigo-600 transition-colors">
+        <i class="fas fa-home mr-1"></i>
+        Home
+      </a>
+      <% breadcrumbs.forEach(crumb => { %>
+        <i class="fas fa-chevron-right text-gray-400"></i>
+        <a href="/media/folder/<%= crumb.id %>" class="hover:text-indigo-600 transition-colors" style="color: <%= crumb.color %>">
+          <%= crumb.name %>
+        </a>
+      <% }) %>
+    </nav>
+  <% } %>
+
+  <!-- Search and Filter Bar -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+    <div class="flex flex-col lg:flex-row gap-4 items-center">
+      <!-- Search Input -->
+      <div class="flex-1 relative">
+        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        <input type="text" id="searchInput" placeholder="Search media files..." 
+               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+               value="<%= filters.search || '' %>">
+      </div>
+      
+      <!-- Filter Controls -->
+      <div class="flex gap-3 items-center">
+        <select id="typeFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+          <option value="all">All Types</option>
+          <option value="image" <%= filters.type === 'image' ? 'selected' : '' %>>Images</option>
+          <option value="video" <%= filters.type === 'video' ? 'selected' : '' %>>Videos</option>
+          <option value="audio" <%= filters.type === 'audio' ? 'selected' : '' %>>Audio</option>
+          <option value="document" <%= filters.type === 'document' ? 'selected' : '' %>>Documents</option>
+          <option value="other" <%= filters.type === 'other' ? 'selected' : '' %>>Other</option>
+        </select>
+        
+        <select id="sortFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+          <option value="uploadedAt-desc" <%= filters.sortBy === 'uploadedAt' && filters.sortOrder === 'desc' ? 'selected' : '' %>>Newest First</option>
+          <option value="uploadedAt-asc" <%= filters.sortBy === 'uploadedAt' && filters.sortOrder === 'asc' ? 'selected' : '' %>>Oldest First</option>
+          <option value="title-asc" <%= filters.sortBy === 'title' && filters.sortOrder === 'asc' ? 'selected' : '' %>>Name A-Z</option>
+          <option value="title-desc" <%= filters.sortBy === 'title' && filters.sortOrder === 'desc' ? 'selected' : '' %>>Name Z-A</option>
+          <option value="fileSize-desc" <%= filters.sortBy === 'fileSize' && filters.sortOrder === 'desc' ? 'selected' : '' %>>Largest First</option>
+          <option value="fileSize-asc" <%= filters.sortBy === 'fileSize' && filters.sortOrder === 'asc' ? 'selected' : '' %>>Smallest First</option>
+        </select>
+        
+        <div class="flex bg-gray-100 rounded-lg p-1">
+          <button id="gridViewBtn" class="px-3 py-2 rounded-md transition-colors <%= filters.view !== 'list' ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-600' %>">
+            <i class="fas fa-th"></i>
+          </button>
+          <button id="listViewBtn" class="px-3 py-2 rounded-md transition-colors <%= filters.view === 'list' ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-600' %>">
+            <i class="fas fa-list"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bulk Actions Bar (Hidden by default) -->
+    <div id="bulkActionsBar" class="hidden mt-4 pt-4 border-t border-gray-200">
+      <div class="flex items-center justify-between">
+        <span id="selectedCount" class="text-sm text-gray-600">0 items selected</span>
+        <div class="flex gap-2">
+          <button id="bulkMoveBtn" class="btn-sm btn-outline">
+            <i class="fas fa-arrows-alt mr-1"></i>
+            Move
+          </button>
+          <button id="bulkDeleteBtn" class="btn-sm btn-danger">
+            <i class="fas fa-trash mr-1"></i>
+            Delete
+          </button>
+          <button id="clearSelectionBtn" class="btn-sm btn-ghost">
+            Clear Selection
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Bar -->
+  <% if (stats) { %>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg">
+        <div class="flex items-center">
+          <i class="fas fa-folder text-2xl mr-3"></i>
+          <div>
+            <div class="text-2xl font-bold"><%= stats.totalFolders %></div>
+            <div class="text-blue-100">Folders</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg">
+        <div class="flex items-center">
+          <i class="fas fa-file text-2xl mr-3"></i>
+          <div>
+            <div class="text-2xl font-bold"><%= stats.totalMedia %></div>
+            <div class="text-green-100">Media Files</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg">
+        <div class="flex items-center">
+          <i class="fas fa-hdd text-2xl mr-3"></i>
+          <div>
+            <div class="text-2xl font-bold" id="totalSizeDisplay"><%= formatFileSize(stats.totalSize) %></div>
+            <div class="text-purple-100">Total Size</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Media Grid/List -->
+  <div id="mediaContainer" class="<%= filters.view === 'list' ? 'space-y-4' : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6' %>">
+    <!-- Folders -->
     <% if (folders && folders.length) { %>
       <% folders.forEach(folder => { %>
-        <div class="group bg-gradient-to-br from-yellow-50 to-white rounded-2xl shadow-xl p-6 flex flex-col items-center border border-yellow-100 hover:shadow-2xl transition-all duration-200 relative overflow-hidden">
-          <a href="/media/folder/<%= folder._id %>" class="flex flex-col items-center w-full">
-            <i class="fas fa-folder fa-4x text-yellow-400 mb-3 group-hover:scale-110 transition-transform"></i>
-            <span class="font-bold text-gray-800 text-lg group-hover:text-yellow-600 transition-colors"><%= folder.name %></span>
-          </a>
-          <form action="/media/folder/<%= folder._id %>/rename" method="POST" class="flex mt-3 w-full">
-            <input type="text" name="name" value="<%= folder.name %>" class="border border-gray-200 rounded-l px-2 py-1 text-sm w-full focus:ring-2 focus:ring-yellow-300" required />
-            <button type="submit" class="bg-yellow-400 text-white px-3 rounded-r hover:bg-yellow-500 text-sm font-semibold transition">Rename</button>
-          </form>
-          <form action="/media/folder/<%= folder._id %>/delete" method="POST" class="mt-2 w-full">
-            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded w-full hover:bg-red-600 text-sm font-semibold transition" onclick="return confirm('Delete this folder and all its contents?')">Delete</button>
-          </form>
-        </div>
-      <% }) %>
-    <% } %>
-    <% if (media && media.length) { %>
-      <% media.forEach(item => { %>
-        <div class="group bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center border border-gray-100 hover:shadow-2xl transition-all duration-200 relative overflow-hidden">
-          <% if (item.type === 'image') { %>
-            <img src="<%= item.url %>" alt="<%= item.title %>" class="w-full h-36 object-cover rounded-xl mb-3 border-2 border-gray-100 group-hover:border-indigo-300 transition" />
-          <% } else if (item.type === 'video') { %>
-            <i class="fas fa-video fa-4x text-indigo-400 mb-3 group-hover:scale-110 transition-transform"></i>
-          <% } else if (item.type === 'audio') { %>
-            <i class="fas fa-music fa-4x text-green-400 mb-3 group-hover:scale-110 transition-transform"></i>
-          <% } else if (item.type === 'document' || item.type === 'resume') { %>
-            <i class="fas fa-file-alt fa-4x text-gray-400 mb-3 group-hover:scale-110 transition-transform"></i>
-          <% } else { %>
-            <i class="fas fa-photo-video fa-4x text-gray-300 mb-3 group-hover:scale-110 transition-transform"></i>
-          <% } %>
-          <span class="font-bold text-gray-800 mb-1 text-base group-hover:text-indigo-600 transition-colors"><%= item.title %></span>
-          <span class="text-xs text-gray-400 mb-2"><%= item.uploadedAt.toLocaleDateString() %></span>
-          <div class="flex gap-2 mt-2">
-            <a href="/media/<%= item._id %>" class="text-indigo-600 hover:text-indigo-900 text-sm font-semibold transition">Show</a>
-            <a href="/media/<%= item._id %>/edit" class="text-yellow-600 hover:text-yellow-900 text-sm font-semibold transition">Edit</a>
-            <form action="/media/<%= item._id %>/delete" method="POST" style="display:inline">
-              <button type="submit" class="text-red-600 hover:text-red-900 text-sm font-semibold transition" onclick="return confirm('Delete this media?')">Delete</button>
-            </form>
+        <div class="media-item folder-item <%= filters.view === 'list' ? 'list-view' : 'grid-view' %>" data-type="folder" data-id="<%= folder._id %>">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 overflow-hidden group">
+            <% if (filters.view === 'list') { %>
+              <!-- List View for Folders -->
+              <div class="flex items-center p-4">
+                <div class="flex-shrink-0 mr-4">
+                  <i class="fas fa-<%= folder.icon %> text-3xl" style="color: <%= folder.color %>"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-semibold text-gray-900 truncate">
+                    <a href="/media/folder/<%= folder._id %>" class="hover:text-indigo-600 transition-colors">
+                      <%= folder.name %>
+                    </a>
+                  </h3>
+                  <p class="text-sm text-gray-500 truncate"><%= folder.description || 'No description' %></p>
+                  <div class="flex items-center text-xs text-gray-400 mt-1">
+                    <span><%= folder.mediaCount || 0 %> files</span>
+                    <span class="mx-2">•</span>
+                    <span><%= formatFileSize(folder.totalSize || 0) %></span>
+                  </div>
+                </div>
+                <div class="flex-shrink-0 ml-4">
+                  <div class="flex items-center space-x-2">
+                    <button class="folder-edit-btn text-gray-400 hover:text-indigo-600 transition-colors" data-folder-id="<%= folder._id %>">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="folder-delete-btn text-gray-400 hover:text-red-600 transition-colors" data-folder-id="<%= folder._id %>">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            <% } else { %>
+              <!-- Grid View for Folders -->
+              <div class="p-6 text-center">
+                <a href="/media/folder/<%= folder._id %>" class="block">
+                  <i class="fas fa-<%= folder.icon %> text-5xl mb-4 group-hover:scale-110 transition-transform" style="color: <%= folder.color %>"></i>
+                  <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
+                    <%= folder.name %>
+                  </h3>
+                  <p class="text-sm text-gray-500 mb-2"><%= folder.description || 'No description' %></p>
+                  <div class="text-xs text-gray-400">
+                    <%= folder.mediaCount || 0 %> files • <%= formatFileSize(folder.totalSize || 0) %>
+                  </div>
+                </a>
+                <div class="flex justify-center space-x-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button class="folder-edit-btn btn-sm btn-outline" data-folder-id="<%= folder._id %>">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="folder-delete-btn btn-sm btn-danger" data-folder-id="<%= folder._id %>">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            <% } %>
           </div>
         </div>
       <% }) %>
     <% } %>
-    <% if ((!folders || !folders.length) && (!media || !media.length)) { %>
-      <div class="col-span-full text-center text-gray-300 text-lg font-semibold py-16">No folders or media found.</div>
+
+    <!-- Media Files -->
+    <% if (media && media.length) { %>
+      <% media.forEach(item => { %>
+        <div class="media-item file-item <%= filters.view === 'list' ? 'list-view' : 'grid-view' %>" 
+             data-type="<%= item.type %>" 
+             data-id="<%= item._id %>"
+             data-title="<%= item.title %>"
+             data-size="<%= item.fileSize || 0 %>">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 overflow-hidden group relative">
+            <!-- Selection Checkbox -->
+            <div class="absolute top-3 left-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+              <input type="checkbox" class="media-checkbox w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500" 
+                     data-media-id="<%= item._id %>">
+            </div>
+            
+            <% if (filters.view === 'list') { %>
+              <!-- List View for Media -->
+              <div class="flex items-center p-4">
+                <div class="flex-shrink-0 mr-4">
+                  <% if (item.type === 'image') { %>
+                    <img src="<%= item.url %>" alt="<%= item.title %>" class="w-16 h-16 object-cover rounded-lg">
+                  <% } else { %>
+                    <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <i class="fas fa-<%= getFileIcon(item.type) %> text-2xl text-gray-400"></i>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-semibold text-gray-900 truncate">
+                    <a href="/media/<%= item._id %>" class="hover:text-indigo-600 transition-colors">
+                      <%= item.title %>
+                    </a>
+                  </h3>
+                  <p class="text-sm text-gray-500 truncate"><%= item.description || 'No description' %></p>
+                  <div class="flex items-center text-xs text-gray-400 mt-1">
+                    <span class="capitalize"><%= item.type %></span>
+                    <span class="mx-2">•</span>
+                    <span><%= formatFileSize(item.fileSize || 0) %></span>
+                    <span class="mx-2">•</span>
+                    <span><%= item.uploadedAt.toLocaleDateString() %></span>
+                  </div>
+                  <% if (item.tags && item.tags.length > 0) { %>
+                    <div class="flex flex-wrap gap-1 mt-2">
+                      <% item.tags.slice(0, 3).forEach(tag => { %>
+                        <span class="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                          <%= tag %>
+                        </span>
+                      <% }) %>
+                      <% if (item.tags.length > 3) { %>
+                        <span class="text-xs text-gray-400">+<%= item.tags.length - 3 %> more</span>
+                      <% } %>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="flex-shrink-0 ml-4">
+                  <div class="flex items-center space-x-2">
+                    <a href="<%= item.url %>" target="_blank" class="text-gray-400 hover:text-green-600 transition-colors" title="Download">
+                      <i class="fas fa-download"></i>
+                    </a>
+                    <a href="/media/<%= item._id %>/edit" class="text-gray-400 hover:text-indigo-600 transition-colors" title="Edit">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <button class="media-delete-btn text-gray-400 hover:text-red-600 transition-colors" data-media-id="<%= item._id %>" title="Delete">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            <% } else { %>
+              <!-- Grid View for Media -->
+              <div class="aspect-square relative overflow-hidden">
+                <% if (item.type === 'image') { %>
+                  <img src="<%= item.url %>" alt="<%= item.title %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                <% } else { %>
+                  <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <i class="fas fa-<%= getFileIcon(item.type) %> text-4xl text-gray-400"></i>
+                  </div>
+                <% } %>
+                
+                <!-- Overlay with actions -->
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <div class="flex space-x-2">
+                    <a href="/media/<%= item._id %>" class="btn-sm bg-white text-gray-700 hover:bg-gray-100">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="<%= item.url %>" target="_blank" class="btn-sm bg-white text-gray-700 hover:bg-gray-100">
+                      <i class="fas fa-download"></i>
+                    </a>
+                  </div>
+                </div>
+                
+                <!-- File type badge -->
+                <div class="absolute top-3 right-3 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full uppercase">
+                  <%= item.type %>
+                </div>
+              </div>
+              
+              <div class="p-4">
+                <h3 class="font-semibold text-gray-900 mb-1 truncate group-hover:text-indigo-600 transition-colors">
+                  <a href="/media/<%= item._id %>"><%= item.title %></a>
+                </h3>
+                <div class="text-xs text-gray-500 mb-2">
+                  <%= formatFileSize(item.fileSize || 0) %> • <%= item.uploadedAt.toLocaleDateString() %>
+                </div>
+                <% if (item.tags && item.tags.length > 0) { %>
+                  <div class="flex flex-wrap gap-1">
+                    <% item.tags.slice(0, 2).forEach(tag => { %>
+                      <span class="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                        <%= tag %>
+                      </span>
+                    <% }) %>
+                    <% if (item.tags.length > 2) { %>
+                      <span class="text-xs text-gray-400">+<%= item.tags.length - 2 %></span>
+                    <% } %>
+                  </div>
+                <% } %>
+                
+                <!-- Action buttons for grid view -->
+                <div class="flex justify-between items-center mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div class="flex space-x-1">
+                    <a href="/media/<%= item._id %>/edit" class="btn-xs btn-outline">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <button class="media-delete-btn btn-xs btn-danger" data-media-id="<%= item._id %>">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
     <% } %>
   </div>
+
+  <!-- Empty State -->
+  <% if ((!folders || !folders.length) && (!media || !media.length)) { %>
+    <div class="text-center py-16">
+      <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+        <i class="fas fa-photo-video text-3xl text-gray-400"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">No media found</h3>
+      <p class="text-gray-500 mb-6">Get started by uploading your first media file or creating a folder.</p>
+      <div class="flex justify-center space-x-4">
+        <a href="/media/new<%= currentFolder ? '?folder=' + currentFolder._id : '' %>" class="btn-primary">
+          <i class="fas fa-plus mr-2"></i>
+          Upload Media
+        </a>
+        <button id="createFolderBtnEmpty" class="btn-outline">
+          <i class="fas fa-folder-plus mr-2"></i>
+          Create Folder
+        </button>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Pagination -->
+  <% if (pagination && pagination.total > 1) { %>
+    <div class="flex justify-center mt-8">
+      <nav class="flex items-center space-x-2">
+        <% if (pagination.hasPrev) { %>
+          <a href="?page=<%= pagination.prev %><%= buildQueryString(filters) %>" 
+             class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            Previous
+          </a>
+        <% } %>
+        
+        <% for (let i = Math.max(1, pagination.current - 2); i <= Math.min(pagination.total, pagination.current + 2); i++) { %>
+          <a href="?page=<%= i %><%= buildQueryString(filters) %>" 
+             class="px-3 py-2 text-sm font-medium <%= i === pagination.current ? 'text-indigo-600 bg-indigo-50 border-indigo-500' : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50' %> border rounded-md">
+            <%= i %>
+          </a>
+        <% } %>
+        
+        <% if (pagination.hasNext) { %>
+          <a href="?page=<%= pagination.next %><%= buildQueryString(filters) %>" 
+             class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            Next
+          </a>
+        <% } %>
+      </nav>
+    </div>
+  <% } %>
 </div>
+
+<!-- Modals and JavaScript will be added next -->
+<script src="/js/media-library.js"></script>
+
+<style>
+.btn-primary {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors;
+}
+
+.btn-outline {
+  @apply inline-flex items-center px-4 py-2 border border-indigo-300 text-sm font-medium rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors;
+}
+
+.btn-danger {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-xs font-medium rounded-md;
+}
+
+.btn-xs {
+  @apply px-2 py-1 text-xs font-medium rounded;
+}
+
+.btn-ghost {
+  @apply text-gray-600 hover:text-gray-900 hover:bg-gray-100;
+}
+
+.media-checkbox:checked {
+  @apply bg-indigo-600 border-indigo-600;
+}
+
+.list-view .aspect-square {
+  @apply aspect-auto;
+}
+</style>
+
+<%
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function getFileIcon(type) {
+  const icons = {
+    image: 'image',
+    video: 'video',
+    audio: 'music',
+    document: 'file-alt',
+    resume: 'file-pdf',
+    other: 'file'
+  };
+  return icons[type] || 'file';
+}
+
+function buildQueryString(filters) {
+  const params = [];
+  if (filters) {
+    Object.keys(filters).forEach(key => {
+      if (filters[key] && filters[key] !== 'all' && key !== 'page') {
+        params.push(`${key}=${encodeURIComponent(filters[key])}`);
+      }
+    });
+  }
+  return params.length > 0 ? '&' + params.join('&') : '';
+}
+%>
